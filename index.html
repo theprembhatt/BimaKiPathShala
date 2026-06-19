@@ -886,6 +886,51 @@
   @media print {
     .section-img, .section-img-row img { border: 1px solid #ccc; border-radius: 8px; }
   }
+
+  /* ── Language Toggle ── */
+  .lang-toggle {
+    display: flex;
+    gap: 0.25rem;
+    margin: 0.5rem 0.75rem 0;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.3rem;
+  }
+  .lang-btn {
+    flex: 1;
+    background: none;
+    border: none;
+    border-radius: 7px;
+    padding: 0.42rem 0.2rem;
+    font-size: 0.62rem;
+    font-family: 'Space Mono', monospace;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+  }
+  .lang-btn.active {
+    background: linear-gradient(135deg, var(--teal-dark), var(--teal));
+    color: white;
+    box-shadow: 0 2px 8px rgba(0,119,182,0.4);
+  }
+  .lang-btn:hover:not(.active) { background: rgba(255,255,255,0.08); color: var(--text-primary); }
+
+  .lang-indicator {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--teal);
+    background: rgba(0,180,216,0.08);
+    border: 1px solid rgba(0,180,216,0.2);
+    border-radius: 100px;
+    padding: 0.2rem 0.6rem;
+    margin-left: 1rem;
+    vertical-align: middle;
+  }
 </style>
 </head>
 <body>
@@ -917,6 +962,13 @@
   <button class="sidebar-quiz-btn" onclick="openQuiz()">
     🎯 Quiz शुरू करें
   </button>
+
+  <div class="nav-section-label" style="margin-top:0.75rem;">Language / भाषा</div>
+  <div class="lang-toggle">
+    <button class="lang-btn active" id="btn-hi" onclick="setLang('hi')">हिंदी</button>
+    <button class="lang-btn" id="btn-hinglish" onclick="setLang('hinglish')">Hinglish</button>
+    <button class="lang-btn" id="btn-en" onclick="setLang('en')">English</button>
+  </div>
 </nav>
 
 <!-- Mobile nav -->
@@ -929,12 +981,12 @@
   <header class="hero">
     <div class="hero-badge">Telecaller Learning Module</div>
     <h1>Insurance Basics <span>Notebook</span></h1>
-    <div class="hero-hindi">इंश्योरेंस बेसिक्स नोटबुक — टेलीकॉलर के लिए</div>
+    <div class="hero-hindi" id="hero-sub">इंश्योरेंस बेसिक्स नोटबुक — टेलीकॉलर के लिए</div>
     <div class="hero-meta">
       <span>📚 8 Chapters</span>
       <span>🎯 Quiz Included</span>
       <span>🖨️ Print Ready</span>
-      <span>🇮🇳 Hindi + English</span>
+      <span>🇮🇳 <span id="hero-lang-label">Hindi + English + Hinglish</span></span>
     </div>
     <div class="hero-shield">🛡️</div>
   </header>
@@ -944,12 +996,12 @@
     <div class="section-header">
       <div class="section-num">01</div>
       <div>
-        <div class="section-title">इंश्योरेंस क्या है?</div>
-        <div class="section-subtitle">What is Insurance?</div>
+        <div class="section-title" id="s1-title">इंश्योरेंस क्या है?</div>
+        <div class="section-subtitle" id="s1-sub">What is Insurance?</div>
       </div>
     </div>
 
-    <div class="lead-text">
+    <div class="lead-text" id="s1-lead">
       इंश्योरेंस एक <strong>सुरक्षा कवच</strong> है, जो मुश्किल समय में आपके बड़े खर्चों से आपकी बचत को बचाता है।
     </div>
 
@@ -958,16 +1010,16 @@
 
     <div class="quote-grid">
       <div class="quote-card">
-        <p>इंश्योरेंस एक ऐसी व्यवस्था है, जिसमें हम आज एक छोटी रकम (प्रीमियम) देते हैं, ताकि भविष्य में किसी बड़ी आर्थिक परेशानी के समय हमें वित्तीय सहायता मिल सके।</p>
+        <p id="q1">इंश्योरेंस एक ऐसी व्यवस्था है, जिसमें हम आज एक छोटी रकम (प्रीमियम) देते हैं, ताकि भविष्य में किसी बड़ी आर्थिक परेशानी के समय हमें वित्तीय सहायता मिल सके।</p>
       </div>
       <div class="quote-card">
-        <p>जैसे हम बारिश से बचने के लिए छाता पहले खरीदते हैं, वैसे ही मेडिकल इमरजेंसी से बचने के लिए हेल्थ इंश्योरेंस पहले लिया जाता है।</p>
+        <p id="q2">जैसे हम बारिश से बचने के लिए छाता पहले खरीदते हैं, वैसे ही मेडिकल इमरजेंसी से बचने के लिए हेल्थ इंश्योरेंस पहले लिया जाता है।</p>
       </div>
       <div class="quote-card">
-        <p>अगर बीमारी, दुर्घटना या इलाज के कारण अस्पताल में भर्ती होना पड़े, तो मेडिकल खर्च का बड़ा हिस्सा इंश्योरेंस कंपनी उठाती है।</p>
+        <p id="q3">अगर बीमारी, दुर्घटना या इलाज के कारण अस्पताल में भर्ती होना पड़े, तो मेडिकल खर्च का बड़ा हिस्सा इंश्योरेंस कंपनी उठाती है।</p>
       </div>
       <div class="quote-card">
-        <p>इंश्योरेंस <strong>खर्च नहीं</strong>, आपकी और आपके परिवार की आर्थिक सुरक्षा में किया गया एक समझदारी भरा निर्णय है।</p>
+        <p id="q4">इंश्योरेंस <strong>खर्च नहीं</strong>, आपकी और आपके परिवार की आर्थिक सुरक्षा में किया गया एक समझदारी भरा निर्णय है।</p>
       </div>
     </div>
   </section>
@@ -977,12 +1029,12 @@
     <div class="section-header">
       <div class="section-num">02</div>
       <div>
-        <div class="section-title">इंश्योरेंस की शुरुआत</div>
-        <div class="section-subtitle">History of Insurance</div>
+        <div class="section-title" id="s2-title">इंश्योरेंस की शुरुआत</div>
+        <div class="section-subtitle" id="s2-sub">History of Insurance</div>
       </div>
     </div>
 
-    <div class="lead-text" style="margin-bottom:2rem;">
+    <div class="lead-text" id="s2-lead" style="margin-bottom:2rem;">
       इंश्योरेंस की शुरुआत आज की नहीं, बल्कि <strong>हज़ारों साल पहले</strong> हुई थी।
     </div>
 
@@ -1019,7 +1071,7 @@
 
     <div class="telecaller-box">
       <div class="tc-label">Telecaller Script</div>
-      <p>"इंश्योरेंस की शुरुआत लोगों को अचानक होने वाले आर्थिक नुकसान से बचाने के लिए हुई थी, और आज भी इसका उद्देश्य वही है — मुश्किल समय में आर्थिक सुरक्षा देना।"</p>
+      <p id="s2-script">"इंश्योरेंस की शुरुआत लोगों को अचानक होने वाले आर्थिक नुकसान से बचाने के लिए हुई थी, और आज भी इसका उद्देश्य वही है — मुश्किल समय में आर्थिक सुरक्षा देना।"</p>
     </div>
   </section>
 
@@ -1028,8 +1080,8 @@
     <div class="section-header">
       <div class="section-num">03</div>
       <div>
-        <div class="section-title">IRDAI — नियामक संस्था</div>
-        <div class="section-subtitle">Who Controls Insurance in India?</div>
+        <div class="section-title" id="s3-title">IRDAI — नियामक संस्था</div>
+        <div class="section-subtitle" id="s3-sub">Who Controls Insurance in India?</div>
       </div>
     </div>
 
@@ -1042,11 +1094,11 @@
         <div class="irdai-meta">IRDA ACT, 1999 · HYDERABAD, INDIA</div>
         <div class="irdai-name">Insurance Regulatory and Development Authority of India</div>
         <ul class="irdai-functions">
-          <li>इंश्योरेंस कंपनियों को <strong>लाइसेंस</strong> देना</li>
-          <li>ग्राहकों के <strong>हितों की सुरक्षा</strong> करना</li>
-          <li>नियम और <strong>गाइडलाइन्स</strong> बनाना</li>
-          <li>प्रीमियम, क्लेम और पॉलिसी प्रक्रियाओं की <strong>निगरानी</strong> करना</li>
-          <li>शिकायतों के <strong>समाधान</strong> के लिए व्यवस्था सुनिश्चित करना</li>
+          <li id="if1">इंश्योरेंस कंपनियों को <strong>लाइसेंस</strong> देना</li>
+          <li id="if2">ग्राहकों के <strong>हितों की सुरक्षा</strong> करना</li>
+          <li id="if3">नियम और <strong>गाइडलाइन्स</strong> बनाना</li>
+          <li id="if4">प्रीमियम, क्लेम और पॉलिसी प्रक्रियाओं की <strong>निगरानी</strong> करना</li>
+          <li id="if5">शिकायतों के <strong>समाधान</strong> के लिए व्यवस्था सुनिश्चित करना</li>
         </ul>
       </div>
     </div>
@@ -1060,8 +1112,8 @@
     <div class="section-header">
       <div class="section-num">04</div>
       <div>
-        <div class="section-title">इंश्योरेंस के प्रकार</div>
-        <div class="section-subtitle">Types of Insurance</div>
+        <div class="section-title" id="s4-title">इंश्योरेंस के प्रकार</div>
+        <div class="section-subtitle" id="s4-sub">Types of Insurance</div>
       </div>
     </div>
 
@@ -1110,12 +1162,12 @@
     <div class="section-header">
       <div class="section-num">05</div>
       <div>
-        <div class="section-title">हेल्थ इंश्योरेंस क्यों ज़रूरी है?</div>
-        <div class="section-subtitle">Why Health Insurance is Essential</div>
+        <div class="section-title" id="s5-title">हेल्थ इंश्योरेंस क्यों ज़रूरी है?</div>
+        <div class="section-subtitle" id="s5-sub">Why Health Insurance is Essential</div>
       </div>
     </div>
 
-    <div class="lead-text">
+    <div class="lead-text" id="s5-lead">
       आज के समय में मेडिकल खर्च तेजी से बढ़ रहे हैं। एक छोटी बीमारी या अचानक हुई मेडिकल इमरजेंसी भी आपकी <strong>वर्षों की बचत</strong> को प्रभावित कर सकती है।
     </div>
 
@@ -1123,18 +1175,18 @@
     <div class="img-caption">The Reality of Rising Medical Costs in India — Why Health Insurance Matters</div>
 
     <div class="benefits-grid">
-      <div class="benefit-item"><div class="benefit-check">✓</div><div class="benefit-text">बढ़ते मेडिकल खर्चों से सुरक्षा</div></div>
-      <div class="benefit-item"><div class="benefit-check">✓</div><div class="benefit-text">आपकी बचत को सुरक्षित रखता है</div></div>
-      <div class="benefit-item"><div class="benefit-check">✓</div><div class="benefit-text">कैशलेस इलाज की सुविधा देता है</div></div>
-      <div class="benefit-item"><div class="benefit-check">✓</div><div class="benefit-text">पूरे परिवार को आर्थिक सुरक्षा देता है</div></div>
-      <div class="benefit-item"><div class="benefit-check">✓</div><div class="benefit-text">कम उम्र में कम प्रीमियम पर बड़ा कवर मिलता है</div></div>
-      <div class="benefit-item"><div class="benefit-check">✓</div><div class="benefit-text">वेटिंग पीरियड जल्दी पूरा हो जाता है</div></div>
-      <div class="benefit-item"><div class="benefit-check">✓</div><div class="benefit-text">मेडिकल इमरजेंसी में मानसिक तनाव कम होता है</div></div>
+      <div class="benefit-item"><div class="benefit-check">✓</div><div class="benefit-text" id="b1">बढ़ते मेडिकल खर्चों से सुरक्षा</div></div>
+      <div class="benefit-item"><div class="benefit-check">✓</div><div class="benefit-text" id="b2">आपकी बचत को सुरक्षित रखता है</div></div>
+      <div class="benefit-item"><div class="benefit-check">✓</div><div class="benefit-text" id="b3">कैशलेस इलाज की सुविधा देता है</div></div>
+      <div class="benefit-item"><div class="benefit-check">✓</div><div class="benefit-text" id="b4">पूरे परिवार को आर्थिक सुरक्षा देता है</div></div>
+      <div class="benefit-item"><div class="benefit-check">✓</div><div class="benefit-text" id="b5">कम उम्र में कम प्रीमियम पर बड़ा कवर मिलता है</div></div>
+      <div class="benefit-item"><div class="benefit-check">✓</div><div class="benefit-text" id="b6">वेटिंग पीरियड जल्दी पूरा हो जाता है</div></div>
+      <div class="benefit-item"><div class="benefit-check">✓</div><div class="benefit-text" id="b7">मेडिकल इमरजेंसी में मानसिक तनाव कम होता है</div></div>
     </div>
 
     <div class="telecaller-box" style="margin-top:1.5rem;">
       <div class="tc-label">Telecaller Script</div>
-      <p>"हेल्थ इंश्योरेंस आपके परिवार की सेहत और आपकी बचत — दोनों की सुरक्षा करता है।"</p>
+      <p id="s5-script">"हेल्थ इंश्योरेंस आपके परिवार की सेहत और आपकी बचत — दोनों की सुरक्षा करता है।"</p>
     </div>
   </section>
 
@@ -1143,35 +1195,35 @@
     <div class="section-header">
       <div class="section-num">06</div>
       <div>
-        <div class="section-title">Industry Statistics</div>
-        <div class="section-subtitle">इंश्योरेंस इंडस्ट्री कितनी बड़ी है?</div>
+        <div class="section-title" id="s6-title">Industry Statistics</div>
+        <div class="section-subtitle" id="s6-sub">इंश्योरेंस इंडस्ट्री कितनी बड़ी है?</div>
       </div>
     </div>
 
     <div class="stats-grid">
       <div class="stat-card">
-        <div class="stat-value">€6.9T</div>
-        <div class="stat-unit">Global Market Size</div>
-        <div class="stat-label">दुनिया भर में इंश्योरेंस इंडस्ट्री का आकार</div>
-        <div class="stat-flag">≈ ₹680 लाख करोड़</div>
+        <div class="stat-value">₹680 L Cr</div>
+        <div class="stat-unit">Global Market Size (≈ €6.9 Trillion)</div>
+        <div class="stat-label" id="sl1">दुनिया भर में इंश्योरेंस इंडस्ट्री का आकार</div>
+        <div class="stat-flag">₹6,80,00,000 करोड़ (विश्व बाज़ार)</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value">₹11.93L</div>
-        <div class="stat-unit">Crore Premium — FY 2024-25</div>
-        <div class="stat-label">भारत में इंश्योरेंस सेक्टर का कुल प्रीमियम</div>
-        <div class="stat-flag">🇮🇳 India Only</div>
+        <div class="stat-value">₹11.93 L Cr</div>
+        <div class="stat-unit">Premium Collected — FY 2024-25</div>
+        <div class="stat-label" id="sl2">भारत में इंश्योरेंस सेक्टर का कुल प्रीमियम</div>
+        <div class="stat-flag">🇮🇳 ₹11,93,000 करोड़</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value">41Cr+</div>
+        <div class="stat-value">41 Cr+</div>
         <div class="stat-unit">Policies Issued — FY 2024-25</div>
-        <div class="stat-label">भारत में जारी की गई पॉलिसियाँ</div>
-        <div class="stat-flag">🇮🇳 India Only</div>
+        <div class="stat-label" id="sl3">भारत में जारी की गई पॉलिसियाँ</div>
+        <div class="stat-flag">🇮🇳 41,00,00,000 पॉलिसियाँ</div>
       </div>
       <div class="stat-card">
         <div class="stat-value">#10</div>
         <div class="stat-unit">Global Rank</div>
-        <div class="stat-label">भारत दुनिया का 10वां सबसे बड़ा इंश्योरेंस मार्केट</div>
-        <div class="stat-flag">🇮🇳 & Growing Fast</div>
+        <div class="stat-label" id="sl4">भारत दुनिया का 10वां सबसे बड़ा इंश्योरेंस मार्केट</div>
+        <div class="stat-flag">🇮🇳 & तेज़ी से बढ़ रहा है</div>
       </div>
     </div>
 
@@ -1187,8 +1239,8 @@
     <div class="section-header">
       <div class="section-num">07</div>
       <div>
-        <div class="section-title">प्रमुख इंश्योरेंस कंपनियाँ</div>
-        <div class="section-subtitle">Major Insurance Companies in India</div>
+        <div class="section-title" id="s7-title">प्रमुख इंश्योरेंस कंपनियाँ</div>
+        <div class="section-subtitle" id="s7-sub">Major Insurance Companies in India</div>
       </div>
     </div>
 
@@ -1235,6 +1287,16 @@
       </div>
     </div>
 
+    <div class="company-group">
+      <div class="company-group-title">
+        <span class="badge" style="background:rgba(255,107,107,0.2);color:#ff8a8a;">Broker</span>
+        Insurance Broker — हमारी कंपनी
+      </div>
+      <div class="company-grid">
+        <span class="company-chip" style="background:linear-gradient(135deg,rgba(255,107,107,0.12),rgba(244,196,48,0.08));border-color:rgba(255,107,107,0.35);color:#ffb3b3;font-weight:600;font-size:0.82rem;padding:0.6rem 1.2rem;">🏢 Alps Insurance Brokers Pvt. Ltd.</span>
+      </div>
+    </div>
+
     <img src="images/img8.png" alt="All Health Insurance Companies in India" class="section-img">
     <div class="img-caption">भारत में सभी हेल्थ इंश्योरेंस कंपनियाँ — SAHI, General & PSU Complete Reference</div>
 
@@ -1247,8 +1309,8 @@
     <div class="section-header">
       <div class="section-num">08</div>
       <div>
-        <div class="section-title">पॉलिसी में क्या होता है?</div>
-        <div class="section-subtitle">What's Covered in a Health Insurance Policy?</div>
+        <div class="section-title" id="s8-title">पॉलिसी में क्या होता है?</div>
+        <div class="section-subtitle" id="s8-sub">What's Covered in a Health Insurance Policy?</div>
       </div>
     </div>
 
@@ -1308,7 +1370,7 @@
       आजकल कई <strong>डे-केयर ट्रीटमेंट</strong> (जैसे मोतियाबिंद, कीमोथेरेपी, डायलिसिस आदि) में 24 घंटे भर्ती होना ज़रूरी नहीं होता, फिर भी वे पॉलिसी में कवर हो सकते हैं।
     </div>
 
-    <div class="remembered-line">
+    <div class="remembered-line" id="s8-rem">
       "आप हेल्थ इंश्योरेंस बीमारी के लिए नहीं, बल्कि अस्पताल के बढ़ते खर्चों से अपनी बचत को सुरक्षित रखने के लिए लेते हैं।"
     </div>
 
@@ -1317,11 +1379,11 @@
       <div class="section-divider"><hr><span>📞 Telecaller Scripts</span><hr></div>
       <div class="telecaller-box">
         <div class="tc-label">Script 1 — Policy Explain</div>
-        <p>"सर/मैम, हेल्थ इंश्योरेंस पॉलिसी में अस्पताल का खर्च, सर्जरी, कैशलेस इलाज और मेडिकल इमरजेंसी के दौरान आपकी बचत की सुरक्षा शामिल होती है।"</p>
+        <p id="s8-sc1">"सर/मैम, हेल्थ इंश्योरेंस पॉलिसी में अस्पताल का खर्च, सर्जरी, कैशलेस इलाज और मेडिकल इमरजेंसी के दौरान आपकी बचत की सुरक्षा शामिल होती है।"</p>
       </div>
       <div class="telecaller-box">
         <div class="tc-label">Script 2 — How It Works</div>
-        <p>"सर/मैम, जब किसी मेडिकल इमरजेंसी के कारण अस्पताल में भर्ती होने की ज़रूरत पड़ती है, तब आपकी हेल्थ इंश्योरेंस पॉलिसी आपके इलाज के खर्च में आर्थिक सहायता करती है।"</p>
+        <p id="s8-sc2">"सर/मैम, जब किसी मेडिकल इमरजेंसी के कारण अस्पताल में भर्ती होने की ज़रूरत पड़ती है, तब आपकी हेल्थ इंश्योरेंस पॉलिसी आपके इलाज के खर्च में आर्थिक सहायता करती है।"</p>
       </div>
     </div>
   </section>
@@ -1331,8 +1393,8 @@
     <div class="section-header">
       <div class="section-num">📖</div>
       <div>
-        <div class="section-title">Key Terms — महत्वपूर्ण शब्द</div>
-        <div class="section-subtitle">Glossary for Telecallers</div>
+        <div class="section-title" id="gl-title">Key Terms — महत्वपूर्ण शब्द</div>
+        <div class="section-subtitle" id="gl-sub">Glossary for Telecallers</div>
       </div>
     </div>
 
@@ -1342,42 +1404,42 @@
           <div class="term-en">Sum Insured</div>
           <div class="term-hi">सम इंश्योर्ड</div>
         </div>
-        <div class="glossary-def">कंपनी अधिकतम कितना खर्च कवर करेगी — Maximum amount the insurance company will cover for your treatment.</div>
+        <div class="glossary-def" id="gd1">कंपनी अधिकतम कितना खर्च कवर करेगी — Maximum amount the insurance company will cover for your treatment.</div>
       </div>
       <div class="glossary-item">
         <div class="glossary-term">
           <div class="term-en">Premium</div>
           <div class="term-hi">प्रीमियम</div>
         </div>
-        <div class="glossary-def">पॉलिसी के लिए आपको कितना भुगतान करना होगा — The amount you pay periodically to keep your insurance active.</div>
+        <div class="glossary-def" id="gd2">पॉलिसी के लिए आपको कितना भुगतान करना होगा — The amount you pay periodically to keep your insurance active.</div>
       </div>
       <div class="glossary-item">
         <div class="glossary-term">
           <div class="term-en">Waiting Period</div>
           <div class="term-hi">वेटिंग पीरियड</div>
         </div>
-        <div class="glossary-def">कुछ बीमारियों के लिए तय प्रतीक्षा अवधि — A set period before you can claim for certain pre-existing conditions.</div>
+        <div class="glossary-def" id="gd3">कुछ बीमारियों के लिए तय प्रतीक्षा अवधि — A set period before you can claim for certain pre-existing conditions.</div>
       </div>
       <div class="glossary-item">
         <div class="glossary-term">
           <div class="term-en">Network Hospital</div>
           <div class="term-hi">नेटवर्क हॉस्पिटल</div>
         </div>
-        <div class="glossary-def">वे अस्पताल जहाँ कैशलेस इलाज उपलब्ध है — Hospitals where you can avail cashless treatment directly billed to the insurer.</div>
+        <div class="glossary-def" id="gd4">वे अस्पताल जहाँ कैशलेस इलाज उपलब्ध है — Hospitals where you can avail cashless treatment directly billed to the insurer.</div>
       </div>
       <div class="glossary-item">
         <div class="glossary-term">
           <div class="term-en">Co-pay</div>
           <div class="term-hi">को-पे</div>
         </div>
-        <div class="glossary-def">क्लेम का वह हिस्सा जो ग्राहक को खुद देना पड़ सकता है — A percentage of the claim amount paid by the policyholder.</div>
+        <div class="glossary-def" id="gd5">क्लेम का वह हिस्सा जो ग्राहक को खुद देना पड़ सकता है — A percentage of the claim amount paid by the policyholder.</div>
       </div>
       <div class="glossary-item">
         <div class="glossary-term">
           <div class="term-en">Exclusions</div>
           <div class="term-hi">एक्सक्लूज़न</div>
         </div>
-        <div class="glossary-def">वे बीमारियाँ या खर्च जो पॉलिसी में कवर नहीं होते — Conditions, treatments, or expenses not covered under the policy.</div>
+        <div class="glossary-def" id="gd6">वे बीमारियाँ या खर्च जो पॉलिसी में कवर नहीं होते — Conditions, treatments, or expenses not covered under the policy.</div>
       </div>
     </div>
   </section>
@@ -1626,6 +1688,195 @@
     });
   }, { threshold: 0.2 });
   statValues.forEach(sv => observer.observe(sv));
+
+  // ── Language Switcher ──
+  const T = {
+    hi: {
+      'hero-sub':   'इंश्योरेंस बेसिक्स नोटबुक — टेलीकॉलर के लिए',
+      's1-title':   'इंश्योरेंस क्या है?',
+      's1-sub':     'What is Insurance?',
+      's1-lead':    'इंश्योरेंस एक <strong>सुरक्षा कवच</strong> है, जो मुश्किल समय में आपके बड़े खर्चों से आपकी बचत को बचाता है।',
+      'q1': 'इंश्योरेंस एक ऐसी व्यवस्था है, जिसमें हम आज एक छोटी रकम (प्रीमियम) देते हैं, ताकि भविष्य में किसी बड़ी आर्थिक परेशानी के समय हमें वित्तीय सहायता मिल सके।',
+      'q2': 'जैसे हम बारिश से बचने के लिए छाता पहले खरीदते हैं, वैसे ही मेडिकल इमरजेंसी से बचने के लिए हेल्थ इंश्योरेंस पहले लिया जाता है।',
+      'q3': 'अगर बीमारी, दुर्घटना या इलाज के कारण अस्पताल में भर्ती होना पड़े, तो मेडिकल खर्च का बड़ा हिस्सा इंश्योरेंस कंपनी उठाती है।',
+      'q4': 'इंश्योरेंस <strong>खर्च नहीं</strong>, आपकी और आपके परिवार की आर्थिक सुरक्षा में किया गया एक समझदारी भरा निर्णय है।',
+      's2-title':   'इंश्योरेंस की शुरुआत',
+      's2-sub':     'History of Insurance',
+      's2-lead':    'इंश्योरेंस की शुरुआत आज की नहीं, बल्कि <strong>हज़ारों साल पहले</strong> हुई थी।',
+      's2-script':  '"इंश्योरेंस की शुरुआत लोगों को अचानक होने वाले आर्थिक नुकसान से बचाने के लिए हुई थी, और आज भी इसका उद्देश्य वही है — मुश्किल समय में आर्थिक सुरक्षा देना।"',
+      's3-title':   'IRDAI — नियामक संस्था',
+      's3-sub':     'Who Controls Insurance in India?',
+      'if1': 'इंश्योरेंस कंपनियों को <strong>लाइसेंस</strong> देना',
+      'if2': 'ग्राहकों के <strong>हितों की सुरक्षा</strong> करना',
+      'if3': 'नियम और <strong>गाइडलाइन्स</strong> बनाना',
+      'if4': 'प्रीमियम, क्लेम और पॉलिसी प्रक्रियाओं की <strong>निगरानी</strong> करना',
+      'if5': 'शिकायतों के <strong>समाधान</strong> के लिए व्यवस्था सुनिश्चित करना',
+      's4-title':   'इंश्योरेंस के प्रकार',
+      's4-sub':     'Types of Insurance',
+      's5-title':   'हेल्थ इंश्योरेंस क्यों ज़रूरी है?',
+      's5-sub':     'Why Health Insurance is Essential',
+      's5-lead':    'आज के समय में मेडिकल खर्च तेजी से बढ़ रहे हैं। एक छोटी बीमारी या अचानक हुई मेडिकल इमरजेंसी भी आपकी <strong>वर्षों की बचत</strong> को प्रभावित कर सकती है।',
+      'b1': 'बढ़ते मेडिकल खर्चों से सुरक्षा',
+      'b2': 'आपकी बचत को सुरक्षित रखता है',
+      'b3': 'कैशलेस इलाज की सुविधा देता है',
+      'b4': 'पूरे परिवार को आर्थिक सुरक्षा देता है',
+      'b5': 'कम उम्र में कम प्रीमियम पर बड़ा कवर मिलता है',
+      'b6': 'वेटिंग पीरियड जल्दी पूरा हो जाता है',
+      'b7': 'मेडिकल इमरजेंसी में मानसिक तनाव कम होता है',
+      's5-script':  '"हेल्थ इंश्योरेंस आपके परिवार की सेहत और आपकी बचत — दोनों की सुरक्षा करता है।"',
+      's6-title':   'Industry Statistics',
+      's6-sub':     'इंश्योरेंस इंडस्ट्री कितनी बड़ी है?',
+      'sl1': 'दुनिया भर में इंश्योरेंस इंडस्ट्री का आकार',
+      'sl2': 'भारत में इंश्योरेंस सेक्टर का कुल प्रीमियम',
+      'sl3': 'भारत में जारी की गई पॉलिसियाँ',
+      'sl4': 'भारत दुनिया का 10वां सबसे बड़ा इंश्योरेंस मार्केट',
+      's7-title':   'प्रमुख इंश्योरेंस कंपनियाँ',
+      's7-sub':     'Major Insurance Companies in India',
+      's8-title':   'पॉलिसी में क्या होता है?',
+      's8-sub':     "What's Covered in a Health Insurance Policy?",
+      's8-sc1':     '"सर/मैम, हेल्थ इंश्योरेंस पॉलिसी में अस्पताल का खर्च, सर्जरी, कैशलेस इलाज और मेडिकल इमरजेंसी के दौरान आपकी बचत की सुरक्षा शामिल होती है।"',
+      's8-sc2':     '"सर/मैम, जब किसी मेडिकल इमरजेंसी के कारण अस्पताल में भर्ती होने की ज़रूरत पड़ती है, तब आपकी हेल्थ इंश्योरेंस पॉलिसी आपके इलाज के खर्च में आर्थिक सहायता करती है।"',
+      's8-rem':     '"आप हेल्थ इंश्योरेंस बीमारी के लिए नहीं, बल्कि अस्पताल के बढ़ते खर्चों से अपनी बचत को सुरक्षित रखने के लिए लेते हैं।"',
+      'gl-title':   'Key Terms — महत्वपूर्ण शब्द',
+      'gl-sub':     'Glossary for Telecallers',
+      'gd1': 'कंपनी अधिकतम कितना खर्च कवर करेगी — Maximum amount the insurance company will cover for your treatment.',
+      'gd2': 'पॉलिसी के लिए आपको कितना भुगतान करना होगा — The amount you pay periodically to keep your insurance active.',
+      'gd3': 'कुछ बीमारियों के लिए तय प्रतीक्षा अवधि — A set period before you can claim for certain pre-existing conditions.',
+      'gd4': 'वे अस्पताल जहाँ कैशलेस इलाज उपलब्ध है — Hospitals where you can avail cashless treatment directly billed to the insurer.',
+      'gd5': 'क्लेम का वह हिस्सा जो ग्राहक को खुद देना पड़ सकता है — A percentage of the claim amount paid by the policyholder.',
+      'gd6': 'वे बीमारियाँ या खर्च जो पॉलिसी में कवर नहीं होते — Conditions, treatments, or expenses not covered under the policy.',
+    },
+    hinglish: {
+      'hero-sub':   'Insurance Basics Notebook — Telecallers ke liye',
+      's1-title':   'Insurance Kya Hai?',
+      's1-sub':     'Insurance ko simple bhasha mein samjhein',
+      's1-lead':    'Insurance ek <strong>suraksha kavach</strong> hai, jo mushkil waqt mein aapke bade kharchon se aapki bachat ko bachata hai.',
+      'q1': 'Insurance ek aisi vyavastha hai jisme hum aaj ek chhoti rakam (premium) dete hain, taaki future mein kisi badi financial pareshani ke waqt humein financial help mil sake.',
+      'q2': 'Jaise hum baarish se bachne ke liye pehle chhaata khareedте hain, waise hi medical emergency se bachne ke liye health insurance pehle liya jaata hai.',
+      'q3': 'Agar bimari, accident ya ilaaj ke wajah se hospital mein admit hona pade, toh medical kharche ka bada hissa insurance company uthati hai.',
+      'q4': 'Insurance <strong>kharcha nahi hai</strong> — yeh aapki aur aapke parivaar ki financial security mein kiya gaya ek samajhdaar faisla hai.',
+      's2-title':   'Insurance Ki Shuruaat',
+      's2-sub':     'Insurance ki history kab shuru hui?',
+      's2-lead':    'Insurance ki shuruaat aaj ki nahi, balki <strong>hazaaron saal pehle</strong> hui thi.',
+      's2-script':  '"Insurance ki shuruaat logon ko achanak hone waale financial nuksaan se bachane ke liye hui thi — aur aaj bhi iska maqsad wahi hai — mushkil waqt mein financial security dena."',
+      's3-title':   'IRDAI — Regulatory Body',
+      's3-sub':     'Bharat mein insurance kaun control karta hai?',
+      'if1': 'Insurance companies ko <strong>license</strong> dena',
+      'if2': 'Customers ke <strong>interests ki protection</strong> karna',
+      'if3': 'Rules aur <strong>guidelines</strong> banana',
+      'if4': 'Premium, claim aur policy processes ki <strong>monitoring</strong> karna',
+      'if5': 'Complaints ke <strong>resolution</strong> ke liye system ensure karna',
+      's4-title':   'Insurance Ke Prakar',
+      's4-sub':     'Insurance kitne tarah ka hota hai?',
+      's5-title':   'Health Insurance Kyun Zaroori Hai?',
+      's5-sub':     'Health insurance lene ke fayde',
+      's5-lead':    'Aaj ke waqt mein medical expenses tezi se badh rahe hain. Ek chhoti bimari ya achanak aayi medical emergency bhi aapki <strong>saalon ki bachat</strong> ko affect kar sakti hai.',
+      'b1': 'Badhte medical kharchon se suraksha',
+      'b2': 'Aapki bachat ko safe rakhta hai',
+      'b3': 'Cashless ilaaj ki facility deta hai',
+      'b4': 'Poore parivaar ko financial security deta hai',
+      'b5': 'Kam umar mein kam premium par bada cover milta hai',
+      'b6': 'Waiting period jaldi complete ho jaata hai',
+      'b7': 'Medical emergency mein mental stress kam hota hai',
+      's5-script':  '"Health insurance aapke parivaar ki health aur aapki bachat — dono ki suraksha karta hai."',
+      's6-title':   'Industry Statistics',
+      's6-sub':     'Insurance industry kitni badi hai?',
+      'sl1': 'Duniya bhar mein insurance industry ka size',
+      'sl2': 'Bharat mein insurance sector ka total premium',
+      'sl3': 'Bharat mein jaari ki gayi policies',
+      'sl4': 'Bharat duniya ka 10wa sabse bada insurance market hai',
+      's7-title':   'Pramukh Insurance Companies',
+      's7-sub':     'Bharat ki major insurance companies',
+      's8-title':   'Policy Mein Kya Hota Hai?',
+      's8-sub':     'Health insurance policy mein kya cover hota hai?',
+      's8-sc1':     '"Sir/Ma\'am, health insurance policy mein hospital ka kharcha, surgery, cashless treatment aur medical emergency ke dauran aapki bachat ki protection hoti hai."',
+      's8-sc2':     '"Sir/Ma\'am, jab kisi medical emergency ki wajah se hospital mein admit hone ki zaroorat padti hai, tab aapki health insurance policy aapke treatment ke kharche mein financial help karti hai."',
+      's8-rem':     '"Aap health insurance bimari ke liye nahi, balki hospital ke badhte kharchon se apni bachat ko safe rakhne ke liye lete hain."',
+      'gl-title':   'Key Terms — Important Shabda',
+      'gl-sub':     'Telecallers ke liye Glossary',
+      'gd1': 'Company se maximum kitna kharcha cover hoga — Maximum amount jo insurance company aapke ilaaj par degi.',
+      'gd2': 'Policy ke liye aapko kitna payment karna hoga — Woh amount jo aap regularly dete hain policy active rakhne ke liye.',
+      'gd3': 'Kuch bimariyon ke liye tay wait time — A set period before you can claim for certain pre-existing conditions.',
+      'gd4': 'Woh hospitals jahan cashless ilaaj available hai — Hospitals where cashless treatment is directly billed to insurer.',
+      'gd5': 'Claim ka woh hissa jo customer khud deta hai — A percentage of claim amount paid by the policyholder.',
+      'gd6': 'Woh bimariyan ya kharche jo policy mein cover nahi hote — Conditions or expenses not covered under the policy.',
+    },
+    en: {
+      'hero-sub':   'Insurance Basics Notebook — For Telecallers',
+      's1-title':   'What is Insurance?',
+      's1-sub':     'Understanding Insurance in Simple Terms',
+      's1-lead':    'Insurance is a <strong>protective shield</strong> that safeguards your savings from large expenses during difficult times.',
+      'q1': 'Insurance is an arrangement where we pay a small amount today (premium) so that we receive financial assistance during a major financial crisis in the future.',
+      'q2': 'Just as we buy an umbrella before it rains, health insurance should be taken before a medical emergency strikes.',
+      'q3': 'If you need to be hospitalised due to illness, accident, or treatment, the insurance company covers a major portion of your medical expenses.',
+      'q4': 'Insurance is <strong>not an expense</strong> — it is a wise decision made for the financial security of you and your family.',
+      's2-title':   'History of Insurance',
+      's2-sub':     'When and Where Did Insurance Begin?',
+      's2-lead':    'Insurance did not start today — it has been around for <strong>thousands of years</strong>.',
+      's2-script':  '"Insurance started to protect people from sudden financial losses, and today its purpose remains the same — providing financial security in difficult times."',
+      's3-title':   'IRDAI — The Regulator',
+      's3-sub':     'Who Controls Insurance in India?',
+      'if1': 'Grant <strong>licences</strong> to insurance companies',
+      'if2': 'Protect the <strong>interests of customers</strong>',
+      'if3': 'Create <strong>rules and guidelines</strong>',
+      'if4': '<strong>Monitor</strong> premiums, claims, and policy processes',
+      'if5': 'Ensure systems for <strong>complaint resolution</strong>',
+      's4-title':   'Types of Insurance',
+      's4-sub':     'Categories of Insurance Products',
+      's5-title':   'Why is Health Insurance Essential?',
+      's5-sub':     'Benefits of Having Health Insurance',
+      's5-lead':    'Medical expenses are rising rapidly today. Even a minor illness or a sudden medical emergency can wipe out <strong>years of savings</strong>.',
+      'b1': 'Protection from rising medical expenses',
+      'b2': 'Keeps your savings secure',
+      'b3': 'Provides cashless treatment facility',
+      'b4': 'Gives financial security to the whole family',
+      'b5': 'Get a large cover at lower premium when young',
+      'b6': 'Waiting period completes faster at a younger age',
+      'b7': 'Reduces mental stress during medical emergencies',
+      's5-script':  '"Health insurance protects both your family\'s health and your savings."',
+      's6-title':   'Industry Statistics',
+      's6-sub':     'How Large is the Insurance Industry?',
+      'sl1': 'Total size of the global insurance industry',
+      'sl2': 'Total premium collected in India — FY 2024-25',
+      'sl3': 'Total policies issued in India — FY 2024-25',
+      'sl4': 'India is the 10th largest insurance market in the world',
+      's7-title':   'Major Insurance Companies',
+      's7-sub':     'Leading Insurance Companies in India',
+      's8-title':   'What Does a Policy Cover?',
+      's8-sub':     "Coverage in a Health Insurance Policy",
+      's8-sc1':     '"Sir/Ma\'am, a health insurance policy covers hospitalisation costs, surgery, cashless treatment, and protects your savings during a medical emergency."',
+      's8-sc2':     '"Sir/Ma\'am, when you need to be hospitalised due to a medical emergency, your health insurance policy provides financial assistance for your treatment costs."',
+      's8-rem':     '"You buy health insurance not for illness, but to protect your savings from rising hospital costs."',
+      'gl-title':   'Key Terms — Important Words',
+      'gl-sub':     'Glossary for Telecallers',
+      'gd1': 'The maximum amount the insurance company will cover for your treatment.',
+      'gd2': 'The amount you pay periodically to keep your insurance policy active.',
+      'gd3': 'A set waiting period before you can claim for certain pre-existing conditions.',
+      'gd4': 'Hospitals where you can avail cashless treatment directly billed to the insurer.',
+      'gd5': 'The percentage of the claim amount that the policyholder must pay themselves.',
+      'gd6': 'Conditions, treatments, or expenses not covered under the insurance policy.',
+    }
+  };
+
+  let currentLang = 'hi';
+
+  function setLang(lang) {
+    currentLang = lang;
+    const data = T[lang];
+    Object.keys(data).forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = data[id];
+    });
+    // Toggle buttons
+    ['hi','hinglish','en'].forEach(l => {
+      document.getElementById('btn-' + l).classList.toggle('active', l === lang);
+    });
+    // Update hero lang label
+    const labels = { hi: 'हिंदी', hinglish: 'Hinglish', en: 'English' };
+    document.getElementById('hero-lang-label').textContent = labels[lang];
+    // Set html lang attr
+    document.documentElement.lang = lang === 'en' ? 'en' : 'hi';
+  }
 </script>
 </body>
 </html>
