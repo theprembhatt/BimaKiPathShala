@@ -850,6 +850,42 @@
     display: flex; gap: 0.6rem;
   }
   .remembered-line::before { content: '💡'; }
+
+  /* ── Section Images ── */
+  .section-img {
+    width: 100%;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    margin: 1.5rem 0 0.5rem;
+    display: block;
+    object-fit: contain;
+    max-height: 400px;
+    background: rgba(0,0,0,0.15);
+  }
+  .section-img-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0 0.5rem;
+  }
+  .section-img-row img {
+    width: 100%;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    object-fit: contain;
+    background: rgba(0,0,0,0.15);
+  }
+  .img-caption {
+    text-align: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    margin-bottom: 1.25rem;
+    letter-spacing: 0.04em;
+  }
+  @media print {
+    .section-img, .section-img-row img { border: 1px solid #ccc; border-radius: 8px; }
+  }
 </style>
 </head>
 <body>
@@ -917,6 +953,9 @@
       इंश्योरेंस एक <strong>सुरक्षा कवच</strong> है, जो मुश्किल समय में आपके बड़े खर्चों से आपकी बचत को बचाता है।
     </div>
 
+    <img src="images/img1.png" alt="Health Insurance Illustrations" class="section-img">
+    <div class="img-caption">Health Insurance — Family & Medical Protection Illustrations</div>
+
     <div class="quote-grid">
       <div class="quote-card">
         <p>इंश्योरेंस एक ऐसी व्यवस्था है, जिसमें हम आज एक छोटी रकम (प्रीमियम) देते हैं, ताकि भविष्य में किसी बड़ी आर्थिक परेशानी के समय हमें वित्तीय सहायता मिल सके।</p>
@@ -946,6 +985,9 @@
     <div class="lead-text" style="margin-bottom:2rem;">
       इंश्योरेंस की शुरुआत आज की नहीं, बल्कि <strong>हज़ारों साल पहले</strong> हुई थी।
     </div>
+
+    <img src="images/img2.png" alt="History of Insurance" class="section-img">
+    <div class="img-caption">History of Insurance — From Ancient Trade to Lloyd's of London</div>
 
     <div class="timeline">
       <div class="timeline-item">
@@ -1008,6 +1050,9 @@
         </ul>
       </div>
     </div>
+
+    <img src="images/img3.png" alt="IRDAI Building and Logo" class="section-img" style="max-height:200px;">
+    <div class="img-caption">IRDAI — Insurance Regulatory and Development Authority of India, Hyderabad</div>
   </section>
 
   <!-- Section 4 -->
@@ -1055,6 +1100,9 @@
         </div>
       </div>
     </div>
+
+    <img src="images/img4.png" alt="Types of Insurance" class="section-img">
+    <div class="img-caption">Types of Insurance — Family Health, Individual & Motor Coverage</div>
   </section>
 
   <!-- Section 5 -->
@@ -1070,6 +1118,9 @@
     <div class="lead-text">
       आज के समय में मेडिकल खर्च तेजी से बढ़ रहे हैं। एक छोटी बीमारी या अचानक हुई मेडिकल इमरजेंसी भी आपकी <strong>वर्षों की बचत</strong> को प्रभावित कर सकती है।
     </div>
+
+    <img src="images/img6.png" alt="Rising Medical Costs in India" class="section-img">
+    <div class="img-caption">The Reality of Rising Medical Costs in India — Why Health Insurance Matters</div>
 
     <div class="benefits-grid">
       <div class="benefit-item"><div class="benefit-check">✓</div><div class="benefit-text">बढ़ते मेडिकल खर्चों से सुरक्षा</div></div>
@@ -1123,6 +1174,12 @@
         <div class="stat-flag">🇮🇳 & Growing Fast</div>
       </div>
     </div>
+
+    <div class="section-img-row">
+      <img src="images/img5.png" alt="Insurance Industry Stats">
+      <img src="images/img7.png" alt="India Healthcare Insurance Market Growth">
+    </div>
+    <div class="img-caption">Indian Insurance Market — Growth Projections, Premium Data & Market Share</div>
   </section>
 
   <!-- Section 7 -->
@@ -1177,6 +1234,12 @@
         <span class="company-chip psu">🏛️ United India Insurance</span>
       </div>
     </div>
+
+    <img src="images/img8.png" alt="All Health Insurance Companies in India" class="section-img">
+    <div class="img-caption">भारत में सभी हेल्थ इंश्योरेंस कंपनियाँ — SAHI, General & PSU Complete Reference</div>
+
+    <img src="images/img9.png" alt="PSU Insurance Companies India" class="section-img" style="max-height:220px;">
+    <div class="img-caption">सरकारी (PSU) बीमा कंपनियाँ — 4 Government-Owned Insurance Companies</div>
   </section>
 
   <!-- Section 8 -->
@@ -1188,6 +1251,9 @@
         <div class="section-subtitle">What's Covered in a Health Insurance Policy?</div>
       </div>
     </div>
+
+    <img src="images/img10.png" alt="Health Insurance India - Cashless - Family Floater" class="section-img">
+    <div class="img-caption">Health Insurance India — Cashless Treatment & Family Floater Plans</div>
 
     <div class="section-divider"><hr><span>मुख्य कवरेज / Main Coverage</span><hr></div>
 
@@ -1231,6 +1297,12 @@
         <div class="flow-step-sub">Expenses Covered</div>
       </div>
     </div>
+
+    <img src="images/img11.png" alt="How Health Insurance Policy Works" class="section-img">
+    <div class="img-caption">हेल्थ इंश्योरेंस पॉलिसी कैसे काम करती है — Detailed Step-by-Step Hindi Guide</div>
+
+    <img src="images/img13.png" alt="When to Use Health Insurance Policy" class="section-img">
+    <div class="img-caption">हेल्थ इंश्योरेंस पॉलिसी को कब उपयोग करते हैं? — Complete Reference Infographic</div>
 
     <div class="note-box">
       आजकल कई <strong>डे-केयर ट्रीटमेंट</strong> (जैसे मोतियाबिंद, कीमोथेरेपी, डायलिसिस आदि) में 24 घंटे भर्ती होना ज़रूरी नहीं होता, फिर भी वे पॉलिसी में कवर हो सकते हैं।
