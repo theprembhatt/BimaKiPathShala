@@ -1,0 +1,1559 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Insurance Basics Notebook — Telecallers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,500&family=Noto+Sans+Devanagari:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0a1628;
+    --navy-mid: #112240;
+    --navy-light: #1d3461;
+    --teal: #00b4d8;
+    --teal-dark: #0077b6;
+    --teal-glow: rgba(0,180,216,0.15);
+    --gold: #f4c430;
+    --gold-soft: #ffd97d;
+    --emerald: #2ec4b6;
+    --coral: #ff6b6b;
+    --life-color: #3a86ff;
+    --general-color: #06d6a0;
+    --health-color: #ff006e;
+    --cream: #f8f5ef;
+    --text-primary: #e8edf3;
+    --text-muted: #8899aa;
+    --border: rgba(255,255,255,0.08);
+    --card-bg: rgba(17,34,64,0.7);
+    --sidebar-w: 260px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Noto Sans Devanagari', sans-serif;
+    background: var(--navy);
+    color: var(--text-primary);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ── Background texture ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 10%, rgba(0,119,182,0.18) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 80% at 80% 90%, rgba(0,180,216,0.12) 0%, transparent 55%),
+      radial-gradient(ellipse 40% 40% at 50% 50%, rgba(46,196,182,0.06) 0%, transparent 70%);
+    pointer-events: none; z-index: 0;
+  }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    position: fixed; top: 0; left: 0;
+    width: var(--sidebar-w);
+    height: 100vh;
+    background: rgba(10,22,40,0.96);
+    border-right: 1px solid var(--border);
+    backdrop-filter: blur(20px);
+    display: flex; flex-direction: column;
+    z-index: 100;
+    overflow-y: auto;
+    padding-bottom: 2rem;
+  }
+
+  .sidebar-brand {
+    padding: 1.5rem 1.25rem 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .sidebar-brand .logo-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--teal-dark), var(--teal));
+    color: white;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    margin-bottom: 0.6rem;
+    text-transform: uppercase;
+  }
+  .sidebar-brand h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.95rem;
+    color: var(--cream);
+    line-height: 1.3;
+  }
+  .sidebar-brand p {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+    font-family: 'Noto Sans Devanagari', sans-serif;
+  }
+
+  .progress-bar {
+    height: 3px;
+    background: rgba(255,255,255,0.08);
+    margin: 0.75rem 1.25rem;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--teal-dark), var(--teal));
+    border-radius: 10px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+  .progress-label {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    padding: 0 1.25rem;
+    font-family: 'Space Mono', monospace;
+    margin-bottom: 0.75rem;
+  }
+
+  .nav-list { padding: 0 0.75rem; list-style: none; flex: 1; }
+  .nav-item a {
+    display: flex; align-items: center; gap: 0.6rem;
+    padding: 0.55rem 0.75rem;
+    border-radius: 8px;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.78rem;
+    font-family: 'Noto Sans Devanagari', sans-serif;
+    transition: all 0.2s;
+    position: relative;
+    margin-bottom: 0.15rem;
+  }
+  .nav-item a .nav-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    background: rgba(255,255,255,0.06);
+    border-radius: 4px;
+    padding: 0.1rem 0.35rem;
+    flex-shrink: 0;
+    min-width: 1.4rem;
+    text-align: center;
+  }
+  .nav-item a:hover, .nav-item a.active {
+    background: var(--teal-glow);
+    color: var(--teal);
+  }
+  .nav-item a.active .nav-num {
+    background: var(--teal-dark);
+    color: white;
+  }
+  .nav-item a.active::before {
+    content: '';
+    position: absolute; left: 0; top: 20%; bottom: 20%;
+    width: 3px; border-radius: 2px;
+    background: var(--teal);
+  }
+
+  .nav-section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    padding: 1rem 1.5rem 0.4rem;
+    opacity: 0.7;
+  }
+
+  .sidebar-quiz-btn {
+    margin: 1rem 0.75rem 0;
+    background: linear-gradient(135deg, var(--teal-dark), var(--emerald));
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 0.7rem 1rem;
+    font-family: 'Noto Sans Devanagari', sans-serif;
+    font-size: 0.8rem;
+    cursor: pointer;
+    width: calc(100% - 0rem);
+    display: flex; align-items: center; gap: 0.5rem;
+    justify-content: center;
+    transition: all 0.2s;
+    font-weight: 600;
+  }
+  .sidebar-quiz-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,180,216,0.3); }
+
+  /* ── Main Content ── */
+  .main {
+    margin-left: var(--sidebar-w);
+    min-height: 100vh;
+    position: relative; z-index: 1;
+  }
+
+  /* ── Hero ── */
+  .hero {
+    position: relative;
+    padding: 5rem 3.5rem 4rem;
+    overflow: hidden;
+    border-bottom: 1px solid var(--border);
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(0,119,182,0.2) 0%, transparent 60%),
+                url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2300b4d8' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: rgba(0,180,216,0.12);
+    border: 1px solid rgba(0,180,216,0.3);
+    color: var(--teal);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 0.8rem;
+    border-radius: 100px;
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+  }
+  .hero-badge::before { content: '📋'; font-size: 0.8rem; }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 3.5vw, 3.2rem);
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--cream);
+    max-width: 720px;
+    margin-bottom: 0.75rem;
+  }
+  .hero h1 span { color: var(--teal); }
+  .hero-hindi {
+    font-size: clamp(1.1rem, 2vw, 1.5rem);
+    color: var(--gold-soft);
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+    font-family: 'Noto Sans Devanagari', sans-serif;
+  }
+  .hero-meta {
+    display: flex; gap: 1.5rem; flex-wrap: wrap;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+  }
+  .hero-meta span { display: flex; align-items: center; gap: 0.4rem; }
+
+  .hero-shield {
+    position: absolute; right: 3rem; top: 50%; transform: translateY(-50%);
+    font-size: 8rem; opacity: 0.06; pointer-events: none;
+    animation: float 6s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(-50%) rotate(-5deg); }
+    50% { transform: translateY(-53%) rotate(5deg); }
+  }
+
+  /* ── Sections ── */
+  .section {
+    padding: 3.5rem 3.5rem;
+    border-bottom: 1px solid var(--border);
+    animation: fadeUp 0.5s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-header {
+    display: flex; align-items: flex-start; gap: 1rem;
+    margin-bottom: 2.5rem;
+  }
+  .section-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    background: var(--teal-glow);
+    border: 1px solid rgba(0,180,216,0.25);
+    color: var(--teal);
+    padding: 0.3rem 0.6rem;
+    border-radius: 6px;
+    flex-shrink: 0;
+    margin-top: 0.4rem;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.4rem, 2.5vw, 2rem);
+    color: var(--cream);
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .section-subtitle {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+  }
+
+  /* ── Quote Cards ── */
+  .quote-grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .quote-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--teal);
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    position: relative;
+    backdrop-filter: blur(10px);
+    transition: all 0.2s;
+  }
+  .quote-card:hover { border-color: rgba(0,180,216,0.4); transform: translateY(-2px); }
+  .quote-card::before {
+    content: '"';
+    position: absolute; top: -0.5rem; left: 1rem;
+    font-family: 'Playfair Display', serif;
+    font-size: 4rem; line-height: 1;
+    color: var(--teal); opacity: 0.3;
+  }
+  .quote-card p { font-size: 0.9rem; color: var(--text-primary); font-style: italic; padding-top: 0.5rem; }
+
+  .lead-text {
+    font-size: 1.05rem;
+    color: var(--cream);
+    margin-bottom: 1.5rem;
+    padding: 1rem 1.25rem;
+    background: rgba(0,180,216,0.06);
+    border-radius: 10px;
+    border: 1px solid rgba(0,180,216,0.15);
+    font-weight: 500;
+  }
+
+  /* ── Timeline ── */
+  .timeline { position: relative; padding-left: 2.5rem; }
+  .timeline::before {
+    content: '';
+    position: absolute; left: 0.5rem; top: 0; bottom: 0;
+    width: 2px;
+    background: linear-gradient(180deg, var(--teal-dark), var(--emerald), transparent);
+  }
+  .timeline-item {
+    position: relative;
+    padding-bottom: 2rem;
+    animation: fadeUp 0.5s ease both;
+  }
+  .timeline-item::before {
+    content: '';
+    position: absolute; left: -2.1rem; top: 0.35rem;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--teal);
+    box-shadow: 0 0 0 3px var(--navy), 0 0 0 5px rgba(0,180,216,0.3);
+  }
+  .timeline-item.india::before { background: var(--gold); box-shadow: 0 0 0 3px var(--navy), 0 0 0 5px rgba(244,196,48,0.3); }
+  .timeline-year {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--teal);
+    font-weight: 700;
+    margin-bottom: 0.2rem;
+  }
+  .timeline-item.india .timeline-year { color: var(--gold); }
+  .timeline-title { font-weight: 600; color: var(--cream); font-size: 0.95rem; margin-bottom: 0.2rem; }
+  .timeline-desc { font-size: 0.82rem; color: var(--text-muted); }
+
+  /* ── IRDAI Section ── */
+  .irdai-card {
+    background: linear-gradient(135deg, rgba(0,119,182,0.15), rgba(46,196,182,0.08));
+    border: 1px solid rgba(0,180,216,0.2);
+    border-radius: 16px;
+    padding: 2rem;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 2rem;
+    align-items: start;
+  }
+  .irdai-logo {
+    width: 90px; height: 90px;
+    background: linear-gradient(135deg, var(--teal-dark), var(--teal));
+    border-radius: 16px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-weight: 700; font-size: 1rem;
+    color: white;
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+    box-shadow: 0 8px 32px rgba(0,119,182,0.4);
+  }
+  .irdai-logo span { font-size: 0.45rem; letter-spacing: 0.05em; opacity: 0.8; margin-top: 0.2rem; text-align: center; line-height: 1.3; }
+  .irdai-meta { font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--teal); margin-bottom: 0.5rem; }
+  .irdai-name { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--cream); margin-bottom: 1rem; }
+  .irdai-functions { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+  .irdai-functions li {
+    display: flex; align-items: flex-start; gap: 0.6rem;
+    font-size: 0.83rem; color: var(--text-primary);
+  }
+  .irdai-functions li::before {
+    content: '▸';
+    color: var(--teal); flex-shrink: 0; margin-top: 0.05rem;
+  }
+
+  /* ── Insurance Types ── */
+  .types-grid { display: grid; gap: 1.5rem; }
+  .type-card {
+    border-radius: 14px;
+    padding: 1.5rem;
+    border: 1px solid;
+    transition: all 0.25s;
+  }
+  .type-card:hover { transform: translateY(-3px); }
+  .type-card.life {
+    background: rgba(58,134,255,0.08);
+    border-color: rgba(58,134,255,0.25);
+  }
+  .type-card.general {
+    background: rgba(6,214,160,0.08);
+    border-color: rgba(6,214,160,0.25);
+  }
+  .type-tag {
+    display: inline-block;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    margin-bottom: 0.75rem;
+  }
+  .life .type-tag { background: rgba(58,134,255,0.2); color: #6cabff; }
+  .general .type-tag { background: rgba(6,214,160,0.2); color: #06d6a0; }
+  .type-card h3 { font-family: 'Playfair Display', serif; font-size: 1.15rem; color: var(--cream); margin-bottom: 0.5rem; }
+  .type-card p { font-size: 0.85rem; color: var(--text-muted); }
+  .sub-types {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+  .sub-type {
+    background: rgba(6,214,160,0.06);
+    border: 1px solid rgba(6,214,160,0.15);
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+  }
+  .sub-type-icon { font-size: 1.2rem; margin-bottom: 0.3rem; }
+  .sub-type-name { font-weight: 600; font-size: 0.82rem; color: var(--cream); }
+  .sub-type-desc { font-size: 0.72rem; color: var(--text-muted); margin-top: 0.15rem; }
+
+  /* ── Benefits ── */
+  .benefits-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 0.75rem; }
+  .benefit-item {
+    display: flex; align-items: flex-start; gap: 0.75rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.85rem 1rem;
+    transition: all 0.2s;
+  }
+  .benefit-item:hover { border-color: rgba(46,196,182,0.3); background: rgba(46,196,182,0.05); }
+  .benefit-check {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--emerald), var(--teal-dark));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem; flex-shrink: 0;
+    color: white; font-weight: 700;
+  }
+  .benefit-text { font-size: 0.83rem; color: var(--text-primary); }
+
+  /* ── Stats ── */
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem; }
+  .stat-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.25s;
+  }
+  .stat-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--teal-dark), var(--teal));
+  }
+  .stat-card:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,119,182,0.2); }
+  .stat-value {
+    font-family: 'Space Mono', monospace;
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    font-weight: 700;
+    color: var(--teal);
+    line-height: 1;
+    margin-bottom: 0.25rem;
+  }
+  .stat-unit { font-size: 0.7rem; color: var(--text-muted); font-family: 'Space Mono', monospace; }
+  .stat-label { font-size: 0.78rem; color: var(--text-primary); margin-top: 0.5rem; line-height: 1.4; }
+  .stat-flag { font-size: 0.65rem; color: var(--gold); font-family: 'Space Mono', monospace; margin-top: 0.4rem; }
+
+  /* ── Companies ── */
+  .company-group { margin-bottom: 2rem; }
+  .company-group-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .company-group-title .badge {
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.55rem;
+    font-weight: 700;
+  }
+  .sahi-badge { background: rgba(0,180,216,0.2); color: var(--teal); }
+  .general-badge { background: rgba(6,214,160,0.2); color: var(--emerald); }
+  .psu-badge { background: rgba(244,196,48,0.2); color: var(--gold); }
+
+  .company-grid { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+  .company-chip {
+    padding: 0.45rem 0.9rem;
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    border: 1px solid;
+    transition: all 0.2s;
+    cursor: default;
+  }
+  .company-chip:hover { transform: translateY(-1px); }
+  .company-chip.sahi { background: rgba(0,180,216,0.08); border-color: rgba(0,180,216,0.25); color: #7dd3e8; }
+  .company-chip.sahi:hover { background: rgba(0,180,216,0.15); }
+  .company-chip.general { background: rgba(6,214,160,0.08); border-color: rgba(6,214,160,0.25); color: #6edfc7; }
+  .company-chip.general:hover { background: rgba(6,214,160,0.15); }
+  .company-chip.psu { background: rgba(244,196,48,0.08); border-color: rgba(244,196,48,0.25); color: #f4c430; }
+  .company-chip.psu:hover { background: rgba(244,196,48,0.15); }
+
+  /* ── Policy Coverage ── */
+  .coverage-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.75rem; margin-bottom: 2rem; }
+  .coverage-item {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem;
+    display: flex; align-items: center; gap: 0.75rem;
+    transition: all 0.2s;
+  }
+  .coverage-item:hover { border-color: rgba(0,180,216,0.3); }
+  .coverage-icon { font-size: 1.4rem; flex-shrink: 0; }
+  .coverage-item-name { font-weight: 600; font-size: 0.82rem; color: var(--cream); }
+  .coverage-item-en { font-size: 0.68rem; color: var(--text-muted); font-family: 'Space Mono', monospace; margin-top: 0.1rem; }
+
+  /* ── Key Terms Glossary ── */
+  .glossary { display: flex; flex-direction: column; gap: 0; border-radius: 14px; overflow: hidden; border: 1px solid var(--border); }
+  .glossary-item {
+    display: grid; grid-template-columns: 1fr 1.8fr;
+    gap: 0; border-bottom: 1px solid var(--border);
+    transition: background 0.2s;
+  }
+  .glossary-item:last-child { border-bottom: none; }
+  .glossary-item:hover { background: rgba(0,180,216,0.04); }
+  .glossary-term {
+    padding: 1rem 1.25rem;
+    border-right: 1px solid var(--border);
+    background: rgba(0,0,0,0.1);
+  }
+  .term-en { font-family: 'Space Mono', monospace; font-size: 0.78rem; color: var(--teal); font-weight: 700; }
+  .term-hi { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.15rem; }
+  .glossary-def {
+    padding: 1rem 1.25rem;
+    font-size: 0.82rem; color: var(--text-primary);
+    display: flex; align-items: center;
+  }
+
+  /* ── Telecaller Script ── */
+  .telecaller-box {
+    background: linear-gradient(135deg, rgba(0,119,182,0.12), rgba(0,180,216,0.06));
+    border: 1px solid rgba(0,180,216,0.25);
+    border-radius: 14px;
+    padding: 1.5rem 1.5rem 1.5rem 1.25rem;
+    margin: 1.25rem 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .telecaller-box::before {
+    content: '';
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: 4px;
+    background: linear-gradient(180deg, var(--teal-dark), var(--teal));
+  }
+  .telecaller-box::after {
+    content: '📞';
+    position: absolute; right: 1.25rem; top: 50%; transform: translateY(-50%);
+    font-size: 2.5rem; opacity: 0.08;
+  }
+  .tc-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 0.6rem;
+    display: flex; align-items: center; gap: 0.4rem;
+  }
+  .tc-label::before { content: '📞'; font-size: 0.8rem; }
+  .telecaller-box p {
+    font-size: 0.92rem;
+    color: var(--cream);
+    font-style: italic;
+    font-weight: 500;
+    line-height: 1.7;
+  }
+
+  /* ── How Policy Works ── */
+  .policy-flow {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 0;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .flow-step {
+    padding: 1.25rem 1rem;
+    text-align: center;
+    border-right: 1px solid var(--border);
+    position: relative;
+    background: var(--card-bg);
+    transition: background 0.2s;
+  }
+  .flow-step:last-child { border-right: none; }
+  .flow-step:hover { background: rgba(0,180,216,0.06); }
+  .flow-step-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--teal);
+    opacity: 0.5;
+    margin-bottom: 0.5rem;
+  }
+  .flow-step-icon { font-size: 1.6rem; margin-bottom: 0.5rem; }
+  .flow-step-label { font-size: 0.78rem; color: var(--text-primary); font-weight: 500; }
+  .flow-step-sub { font-size: 0.68rem; color: var(--text-muted); margin-top: 0.2rem; }
+
+  /* ── Quiz Modal ── */
+  .quiz-overlay {
+    position: fixed; inset: 0;
+    background: rgba(5,12,25,0.92);
+    backdrop-filter: blur(20px);
+    z-index: 1000;
+    display: none;
+    align-items: center; justify-content: center;
+    padding: 2rem;
+  }
+  .quiz-overlay.open { display: flex; animation: fadeIn 0.3s ease; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .quiz-card {
+    background: var(--navy-mid);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 2.5rem;
+    max-width: 580px; width: 100%;
+    position: relative;
+    animation: scaleIn 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  @keyframes scaleIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+  .quiz-close {
+    position: absolute; top: 1rem; right: 1rem;
+    background: rgba(255,255,255,0.08);
+    border: none; border-radius: 50%;
+    width: 32px; height: 32px;
+    color: var(--text-muted);
+    cursor: pointer; font-size: 1rem;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .quiz-close:hover { background: rgba(255,100,100,0.2); color: var(--coral); }
+
+  .quiz-progress-bar {
+    height: 4px; background: rgba(255,255,255,0.08);
+    border-radius: 4px; margin-bottom: 2rem; overflow: hidden;
+  }
+  .quiz-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--teal-dark), var(--teal));
+    border-radius: 4px;
+    transition: width 0.4s ease;
+  }
+  .quiz-counter {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+    display: flex; justify-content: space-between;
+  }
+  .quiz-question {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    color: var(--cream);
+    margin-bottom: 0.5rem;
+    line-height: 1.4;
+  }
+  .quiz-hint { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 2rem; }
+  .quiz-options { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1.5rem; }
+  .quiz-option {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.9rem 1.1rem;
+    cursor: pointer;
+    font-size: 0.88rem;
+    color: var(--text-primary);
+    text-align: left;
+    transition: all 0.2s;
+    font-family: 'Noto Sans Devanagari', sans-serif;
+    width: 100%;
+  }
+  .quiz-option:hover { background: var(--teal-glow); border-color: rgba(0,180,216,0.3); }
+  .quiz-option.correct { background: rgba(6,214,160,0.15); border-color: var(--emerald); color: #6edfc7; }
+  .quiz-option.wrong { background: rgba(255,107,107,0.12); border-color: var(--coral); color: #ff8a8a; }
+  .quiz-option:disabled { cursor: default; }
+
+  .quiz-feedback {
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    margin-bottom: 1.5rem;
+    display: none;
+  }
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback.correct { background: rgba(6,214,160,0.1); border: 1px solid rgba(6,214,160,0.3); color: #6edfc7; }
+  .quiz-feedback.wrong { background: rgba(255,107,107,0.1); border: 1px solid rgba(255,107,107,0.3); color: #ff8a8a; }
+
+  .quiz-next-btn {
+    background: linear-gradient(135deg, var(--teal-dark), var(--teal));
+    color: white; border: none; border-radius: 10px;
+    padding: 0.75rem 1.5rem;
+    font-family: 'Noto Sans Devanagari', sans-serif;
+    font-size: 0.88rem; font-weight: 600;
+    cursor: pointer; width: 100%;
+    display: none;
+    transition: all 0.2s;
+  }
+  .quiz-next-btn.show { display: block; }
+  .quiz-next-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,119,182,0.4); }
+
+  .quiz-score {
+    text-align: center; padding: 1rem 0;
+    display: none;
+  }
+  .quiz-score.show { display: block; }
+  .score-emoji { font-size: 3rem; margin-bottom: 1rem; display: block; }
+  .score-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 3rem; font-weight: 700;
+    color: var(--teal);
+    margin-bottom: 0.5rem;
+  }
+  .score-msg { color: var(--text-primary); font-size: 0.9rem; margin-bottom: 1.5rem; }
+
+  /* ── Print ── */
+  @media print {
+    .sidebar, .quiz-overlay, .sidebar-quiz-btn, .hero-shield { display: none !important; }
+    .main { margin-left: 0; }
+    body { background: white; color: #1a1a1a; }
+    body::before { display: none; }
+    .section { break-inside: avoid; border: 1px solid #e0e0e0; margin: 1rem; border-radius: 8px; }
+    .quote-card, .stat-card, .coverage-item, .benefit-item { background: #f8f9fa; border-color: #dee2e6; }
+    .hero { background: #0a1628 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 900px) {
+    :root { --sidebar-w: 0px; }
+    .sidebar { display: none; }
+    .main { margin-left: 0; }
+    .hero, .section { padding: 2.5rem 1.5rem; }
+    .irdai-card { grid-template-columns: 1fr; }
+    .glossary-item { grid-template-columns: 1fr; }
+    .glossary-term { border-right: none; border-bottom: 1px solid var(--border); }
+    .policy-flow { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 600px) {
+    .hero h1 { font-size: 1.6rem; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .policy-flow { grid-template-columns: 1fr; }
+    .flow-step { border-right: none; border-bottom: 1px solid var(--border); }
+    .flow-step:last-child { border-bottom: none; }
+  }
+
+  /* ── Scroll highlight ── */
+  .section:target {
+    animation: highlight 1s ease;
+  }
+  @keyframes highlight {
+    0% { background: rgba(0,180,216,0.08); }
+    100% { background: transparent; }
+  }
+
+  /* ── Mobile nav toggle ── */
+  .mobile-nav-btn {
+    display: none;
+    position: fixed; bottom: 1.5rem; right: 1.5rem;
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--teal-dark), var(--teal));
+    border: none; color: white; font-size: 1.2rem;
+    cursor: pointer;
+    box-shadow: 0 6px 24px rgba(0,119,182,0.5);
+    z-index: 200;
+    align-items: center; justify-content: center;
+  }
+  @media (max-width: 900px) { .mobile-nav-btn { display: flex; } }
+
+  .section-divider {
+    display: flex; align-items: center; gap: 1rem;
+    margin-bottom: 1.75rem;
+  }
+  .section-divider hr { flex: 1; border: none; border-top: 1px solid var(--border); }
+  .section-divider span { font-family: 'Space Mono', monospace; font-size: 0.6rem; color: var(--text-muted); white-space: nowrap; }
+
+  .note-box {
+    background: rgba(244,196,48,0.06);
+    border: 1px solid rgba(244,196,48,0.2);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    font-size: 0.82rem;
+    color: #e8d087;
+    margin-top: 1.25rem;
+    display: flex; gap: 0.6rem; align-items: flex-start;
+  }
+  .note-box::before { content: '📌'; flex-shrink: 0; }
+
+  .remembered-line {
+    background: linear-gradient(135deg, rgba(244,196,48,0.08), rgba(0,180,216,0.06));
+    border: 1px solid rgba(244,196,48,0.2);
+    border-radius: 10px;
+    padding: 1.1rem 1.25rem;
+    font-size: 0.88rem;
+    color: var(--gold-soft);
+    margin-top: 1.25rem;
+    font-style: italic;
+    font-weight: 500;
+    display: flex; gap: 0.6rem;
+  }
+  .remembered-line::before { content: '💡'; }
+</style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<nav class="sidebar">
+  <div class="sidebar-brand">
+    <div class="logo-badge">Telecaller Training</div>
+    <h2>Insurance Basics Notebook</h2>
+    <p>इंश्योरेंस बेसिक्स — टेलीकॉलर के लिए</p>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="readProgress"></div></div>
+  <div class="progress-label" id="progressLabel">0% पढ़ा गया</div>
+
+  <ul class="nav-list">
+    <li class="nav-section-label">Chapters</li>
+    <li class="nav-item"><a href="#s1" class="active"><span class="nav-num">01</span>इंश्योरेंस क्या है?</a></li>
+    <li class="nav-item"><a href="#s2"><span class="nav-num">02</span>इतिहास</a></li>
+    <li class="nav-item"><a href="#s3"><span class="nav-num">03</span>IRDAI</a></li>
+    <li class="nav-item"><a href="#s4"><span class="nav-num">04</span>प्रकार</a></li>
+    <li class="nav-item"><a href="#s5"><span class="nav-num">05</span>हेल्थ इंश्योरेंस</a></li>
+    <li class="nav-item"><a href="#s6"><span class="nav-num">06</span>Industry Stats</a></li>
+    <li class="nav-item"><a href="#s7"><span class="nav-num">07</span>कंपनियाँ</a></li>
+    <li class="nav-item"><a href="#s8"><span class="nav-num">08</span>पॉलिसी कवरेज</a></li>
+    <li class="nav-section-label">Tools</li>
+    <li class="nav-item"><a href="#glossary-section"><span class="nav-num">📖</span>Key Terms</a></li>
+  </ul>
+
+  <button class="sidebar-quiz-btn" onclick="openQuiz()">
+    🎯 Quiz शुरू करें
+  </button>
+</nav>
+
+<!-- Mobile nav -->
+<button class="mobile-nav-btn" onclick="openQuiz()">🎯</button>
+
+<!-- Main -->
+<main class="main">
+
+  <!-- Hero -->
+  <header class="hero">
+    <div class="hero-badge">Telecaller Learning Module</div>
+    <h1>Insurance Basics <span>Notebook</span></h1>
+    <div class="hero-hindi">इंश्योरेंस बेसिक्स नोटबुक — टेलीकॉलर के लिए</div>
+    <div class="hero-meta">
+      <span>📚 8 Chapters</span>
+      <span>🎯 Quiz Included</span>
+      <span>🖨️ Print Ready</span>
+      <span>🇮🇳 Hindi + English</span>
+    </div>
+    <div class="hero-shield">🛡️</div>
+  </header>
+
+  <!-- Section 1 -->
+  <section class="section" id="s1">
+    <div class="section-header">
+      <div class="section-num">01</div>
+      <div>
+        <div class="section-title">इंश्योरेंस क्या है?</div>
+        <div class="section-subtitle">What is Insurance?</div>
+      </div>
+    </div>
+
+    <div class="lead-text">
+      इंश्योरेंस एक <strong>सुरक्षा कवच</strong> है, जो मुश्किल समय में आपके बड़े खर्चों से आपकी बचत को बचाता है।
+    </div>
+
+    <div class="quote-grid">
+      <div class="quote-card">
+        <p>इंश्योरेंस एक ऐसी व्यवस्था है, जिसमें हम आज एक छोटी रकम (प्रीमियम) देते हैं, ताकि भविष्य में किसी बड़ी आर्थिक परेशानी के समय हमें वित्तीय सहायता मिल सके।</p>
+      </div>
+      <div class="quote-card">
+        <p>जैसे हम बारिश से बचने के लिए छाता पहले खरीदते हैं, वैसे ही मेडिकल इमरजेंसी से बचने के लिए हेल्थ इंश्योरेंस पहले लिया जाता है।</p>
+      </div>
+      <div class="quote-card">
+        <p>अगर बीमारी, दुर्घटना या इलाज के कारण अस्पताल में भर्ती होना पड़े, तो मेडिकल खर्च का बड़ा हिस्सा इंश्योरेंस कंपनी उठाती है।</p>
+      </div>
+      <div class="quote-card">
+        <p>इंश्योरेंस <strong>खर्च नहीं</strong>, आपकी और आपके परिवार की आर्थिक सुरक्षा में किया गया एक समझदारी भरा निर्णय है।</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 2 -->
+  <section class="section" id="s2">
+    <div class="section-header">
+      <div class="section-num">02</div>
+      <div>
+        <div class="section-title">इंश्योरेंस की शुरुआत</div>
+        <div class="section-subtitle">History of Insurance</div>
+      </div>
+    </div>
+
+    <div class="lead-text" style="margin-bottom:2rem;">
+      इंश्योरेंस की शुरुआत आज की नहीं, बल्कि <strong>हज़ारों साल पहले</strong> हुई थी।
+    </div>
+
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-year">≈ 1750 BCE</div>
+        <div class="timeline-title">Code of Hammurabi — Ancient Babylon</div>
+        <div class="timeline-desc">व्यापारियों को माल के नुकसान से बचाने के लिए दुनिया की पहली सुरक्षा व्यवस्था बनाई गई।</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">17th Century</div>
+        <div class="timeline-title">Lloyd's Coffee House, London</div>
+        <div class="timeline-desc">समुद्री व्यापार के लिए बीमा का प्रमुख केंद्र बना। Marine Insurance का जन्मस्थान।</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">1666 CE</div>
+        <div class="timeline-title">Great Fire of London</div>
+        <div class="timeline-desc">इस भीषण आग के बाद Fire Insurance की शुरुआत हुई — नुकसान से बचाने का नया तरीका।</div>
+      </div>
+      <div class="timeline-item india">
+        <div class="timeline-year">🇮🇳 1818</div>
+        <div class="timeline-title">भारत का पहला जीवन बीमा</div>
+        <div class="timeline-desc">Oriental Life Insurance Company — Kolkata में स्थापित। भारत में इंश्योरेंस की शुरुआत।</div>
+      </div>
+      <div class="timeline-item india">
+        <div class="timeline-year">🇮🇳 1986+</div>
+        <div class="timeline-title">आधुनिक हेल्थ इंश्योरेंस — भारत</div>
+        <div class="timeline-desc">स्वास्थ्य बीमा का आधुनिक स्वरूप भारत में 1986 के बाद तेजी से विकसित हुआ।</div>
+      </div>
+    </div>
+
+    <div class="telecaller-box">
+      <div class="tc-label">Telecaller Script</div>
+      <p>"इंश्योरेंस की शुरुआत लोगों को अचानक होने वाले आर्थिक नुकसान से बचाने के लिए हुई थी, और आज भी इसका उद्देश्य वही है — मुश्किल समय में आर्थिक सुरक्षा देना।"</p>
+    </div>
+  </section>
+
+  <!-- Section 3 -->
+  <section class="section" id="s3">
+    <div class="section-header">
+      <div class="section-num">03</div>
+      <div>
+        <div class="section-title">IRDAI — नियामक संस्था</div>
+        <div class="section-subtitle">Who Controls Insurance in India?</div>
+      </div>
+    </div>
+
+    <div class="irdai-card">
+      <div class="irdai-logo">
+        IRDAI
+        <span>Regulator<br>Since 1999</span>
+      </div>
+      <div>
+        <div class="irdai-meta">IRDA ACT, 1999 · HYDERABAD, INDIA</div>
+        <div class="irdai-name">Insurance Regulatory and Development Authority of India</div>
+        <ul class="irdai-functions">
+          <li>इंश्योरेंस कंपनियों को <strong>लाइसेंस</strong> देना</li>
+          <li>ग्राहकों के <strong>हितों की सुरक्षा</strong> करना</li>
+          <li>नियम और <strong>गाइडलाइन्स</strong> बनाना</li>
+          <li>प्रीमियम, क्लेम और पॉलिसी प्रक्रियाओं की <strong>निगरानी</strong> करना</li>
+          <li>शिकायतों के <strong>समाधान</strong> के लिए व्यवस्था सुनिश्चित करना</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 4 -->
+  <section class="section" id="s4">
+    <div class="section-header">
+      <div class="section-num">04</div>
+      <div>
+        <div class="section-title">इंश्योरेंस के प्रकार</div>
+        <div class="section-subtitle">Types of Insurance</div>
+      </div>
+    </div>
+
+    <div class="types-grid">
+      <div class="type-card life">
+        <div class="type-tag">Life Insurance</div>
+        <h3>जीवन बीमा — Life Insurance</h3>
+        <p>अगर पॉलिसीधारक के साथ कोई अनहोनी हो जाती है, तो उसके परिवार को आर्थिक सहायता मिलती है।</p>
+      </div>
+
+      <div class="type-card general">
+        <div class="type-tag">General Insurance</div>
+        <h3>जनरल इंश्योरेंस — General Insurance</h3>
+        <p>यह जीवन के अलावा अन्य जोखिमों को कवर करता है। इसमें शामिल हैं:</p>
+        <div class="sub-types">
+          <div class="sub-type">
+            <div class="sub-type-icon">🏥</div>
+            <div class="sub-type-name">Health Insurance</div>
+            <div class="sub-type-desc">बीमारी और अस्पताल के खर्चों के लिए</div>
+          </div>
+          <div class="sub-type">
+            <div class="sub-type-icon">🚗</div>
+            <div class="sub-type-name">Motor Insurance</div>
+            <div class="sub-type-desc">गाड़ी के नुकसान या दुर्घटना के लिए</div>
+          </div>
+          <div class="sub-type">
+            <div class="sub-type-icon">🏠</div>
+            <div class="sub-type-name">Home Insurance</div>
+            <div class="sub-type-desc">घर और सामान की सुरक्षा के लिए</div>
+          </div>
+          <div class="sub-type">
+            <div class="sub-type-icon">✈️</div>
+            <div class="sub-type-name">Travel Insurance</div>
+            <div class="sub-type-desc">यात्रा के दौरान होने वाले जोखिमों के लिए</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 5 -->
+  <section class="section" id="s5">
+    <div class="section-header">
+      <div class="section-num">05</div>
+      <div>
+        <div class="section-title">हेल्थ इंश्योरेंस क्यों ज़रूरी है?</div>
+        <div class="section-subtitle">Why Health Insurance is Essential</div>
+      </div>
+    </div>
+
+    <div class="lead-text">
+      आज के समय में मेडिकल खर्च तेजी से बढ़ रहे हैं। एक छोटी बीमारी या अचानक हुई मेडिकल इमरजेंसी भी आपकी <strong>वर्षों की बचत</strong> को प्रभावित कर सकती है।
+    </div>
+
+    <div class="benefits-grid">
+      <div class="benefit-item"><div class="benefit-check">✓</div><div class="benefit-text">बढ़ते मेडिकल खर्चों से सुरक्षा</div></div>
+      <div class="benefit-item"><div class="benefit-check">✓</div><div class="benefit-text">आपकी बचत को सुरक्षित रखता है</div></div>
+      <div class="benefit-item"><div class="benefit-check">✓</div><div class="benefit-text">कैशलेस इलाज की सुविधा देता है</div></div>
+      <div class="benefit-item"><div class="benefit-check">✓</div><div class="benefit-text">पूरे परिवार को आर्थिक सुरक्षा देता है</div></div>
+      <div class="benefit-item"><div class="benefit-check">✓</div><div class="benefit-text">कम उम्र में कम प्रीमियम पर बड़ा कवर मिलता है</div></div>
+      <div class="benefit-item"><div class="benefit-check">✓</div><div class="benefit-text">वेटिंग पीरियड जल्दी पूरा हो जाता है</div></div>
+      <div class="benefit-item"><div class="benefit-check">✓</div><div class="benefit-text">मेडिकल इमरजेंसी में मानसिक तनाव कम होता है</div></div>
+    </div>
+
+    <div class="telecaller-box" style="margin-top:1.5rem;">
+      <div class="tc-label">Telecaller Script</div>
+      <p>"हेल्थ इंश्योरेंस आपके परिवार की सेहत और आपकी बचत — दोनों की सुरक्षा करता है।"</p>
+    </div>
+  </section>
+
+  <!-- Section 6 -->
+  <section class="section" id="s6">
+    <div class="section-header">
+      <div class="section-num">06</div>
+      <div>
+        <div class="section-title">Industry Statistics</div>
+        <div class="section-subtitle">इंश्योरेंस इंडस्ट्री कितनी बड़ी है?</div>
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value">€6.9T</div>
+        <div class="stat-unit">Global Market Size</div>
+        <div class="stat-label">दुनिया भर में इंश्योरेंस इंडस्ट्री का आकार</div>
+        <div class="stat-flag">≈ ₹680 लाख करोड़</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">₹11.93L</div>
+        <div class="stat-unit">Crore Premium — FY 2024-25</div>
+        <div class="stat-label">भारत में इंश्योरेंस सेक्टर का कुल प्रीमियम</div>
+        <div class="stat-flag">🇮🇳 India Only</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">41Cr+</div>
+        <div class="stat-unit">Policies Issued — FY 2024-25</div>
+        <div class="stat-label">भारत में जारी की गई पॉलिसियाँ</div>
+        <div class="stat-flag">🇮🇳 India Only</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">#10</div>
+        <div class="stat-unit">Global Rank</div>
+        <div class="stat-label">भारत दुनिया का 10वां सबसे बड़ा इंश्योरेंस मार्केट</div>
+        <div class="stat-flag">🇮🇳 & Growing Fast</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 7 -->
+  <section class="section" id="s7">
+    <div class="section-header">
+      <div class="section-num">07</div>
+      <div>
+        <div class="section-title">प्रमुख इंश्योरेंस कंपनियाँ</div>
+        <div class="section-subtitle">Major Insurance Companies in India</div>
+      </div>
+    </div>
+
+    <div class="company-group">
+      <div class="company-group-title">
+        <span class="badge sahi-badge">SAHI</span>
+        Standalone Health Insurance Companies — 7 in India
+      </div>
+      <div class="company-grid">
+        <span class="company-chip sahi">⭐ Star Health & Allied Insurance</span>
+        <span class="company-chip sahi">Niva Bupa Health Insurance</span>
+        <span class="company-chip sahi">Care Health Insurance</span>
+        <span class="company-chip sahi">ManipalCigna Health Insurance</span>
+        <span class="company-chip sahi">Aditya Birla Health Insurance</span>
+        <span class="company-chip sahi">Galaxy Health & Allied Insurance</span>
+      </div>
+    </div>
+
+    <div class="company-group">
+      <div class="company-group-title">
+        <span class="badge general-badge">General</span>
+        General Insurance Companies — Also Offer Health Plans
+      </div>
+      <div class="company-grid">
+        <span class="company-chip general">Tata AIG General Insurance</span>
+        <span class="company-chip general">HDFC ERGO General Insurance</span>
+        <span class="company-chip general">ICICI Lombard General Insurance</span>
+        <span class="company-chip general">SBI General Insurance</span>
+        <span class="company-chip general">Bajaj Allianz General Insurance</span>
+        <span class="company-chip general">Future Generali India Insurance</span>
+      </div>
+    </div>
+
+    <div class="company-group">
+      <div class="company-group-title">
+        <span class="badge psu-badge">PSU</span>
+        Government-Owned — Public Sector Undertaking (4)
+      </div>
+      <div class="company-grid">
+        <span class="company-chip psu">🏛️ The New India Assurance</span>
+        <span class="company-chip psu">🏛️ National Insurance Company</span>
+        <span class="company-chip psu">🏛️ The Oriental Insurance</span>
+        <span class="company-chip psu">🏛️ United India Insurance</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 8 -->
+  <section class="section" id="s8">
+    <div class="section-header">
+      <div class="section-num">08</div>
+      <div>
+        <div class="section-title">पॉलिसी में क्या होता है?</div>
+        <div class="section-subtitle">What's Covered in a Health Insurance Policy?</div>
+      </div>
+    </div>
+
+    <div class="section-divider"><hr><span>मुख्य कवरेज / Main Coverage</span><hr></div>
+
+    <div class="coverage-grid">
+      <div class="coverage-item"><div class="coverage-icon">🏥</div><div><div class="coverage-item-name">अस्पताल में भर्ती</div><div class="coverage-item-en">Hospitalization</div></div></div>
+      <div class="coverage-item"><div class="coverage-icon">🔪</div><div><div class="coverage-item-name">सर्जरी और ऑपरेशन</div><div class="coverage-item-en">Surgery & Operation</div></div></div>
+      <div class="coverage-item"><div class="coverage-icon">🛏️</div><div><div class="coverage-item-name">ICU और रूम रेंट</div><div class="coverage-item-en">ICU & Room Rent</div></div></div>
+      <div class="coverage-item"><div class="coverage-icon">💊</div><div><div class="coverage-item-name">डे-केयर ट्रीटमेंट</div><div class="coverage-item-en">Day Care Treatment</div></div></div>
+      <div class="coverage-item"><div class="coverage-icon">🚑</div><div><div class="coverage-item-name">एम्बुलेंस खर्च</div><div class="coverage-item-en">Ambulance Charges</div></div></div>
+      <div class="coverage-item"><div class="coverage-icon">📋</div><div><div class="coverage-item-name">प्री/पोस्ट हॉस्पिटलाइजेशन</div><div class="coverage-item-en">Pre & Post Hospitalization</div></div></div>
+      <div class="coverage-item"><div class="coverage-icon">💳</div><div><div class="coverage-item-name">कैशलेस इलाज</div><div class="coverage-item-en">Cashless Treatment</div></div></div>
+      <div class="coverage-item"><div class="coverage-icon">🌿</div><div><div class="coverage-item-name">AYUSH उपचार</div><div class="coverage-item-en">AYUSH Treatment</div></div></div>
+    </div>
+
+    <div class="section-divider"><hr><span>पॉलिसी कैसे काम करती है? / How It Works</span><hr></div>
+
+    <div class="policy-flow">
+      <div class="flow-step">
+        <div class="flow-step-num">01</div>
+        <div class="flow-step-icon">🤒</div>
+        <div class="flow-step-label">बीमारी / दुर्घटना</div>
+        <div class="flow-step-sub">Illness / Accident</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-step-num">02</div>
+        <div class="flow-step-icon">🏥</div>
+        <div class="flow-step-label">24+ घंटे भर्ती</div>
+        <div class="flow-step-sub">Hospital Admission</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-step-num">03</div>
+        <div class="flow-step-num" style="font-size:1rem;opacity:1;margin-bottom:0.25rem;color:var(--gold);">⚡</div>
+        <div class="flow-step-icon">🔔</div>
+        <div class="flow-step-label">पॉलिसी सक्रिय</div>
+        <div class="flow-step-sub">Policy Triggers</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-step-num">04</div>
+        <div class="flow-step-icon">💰</div>
+        <div class="flow-step-label">खर्च कवर होता है</div>
+        <div class="flow-step-sub">Expenses Covered</div>
+      </div>
+    </div>
+
+    <div class="note-box">
+      आजकल कई <strong>डे-केयर ट्रीटमेंट</strong> (जैसे मोतियाबिंद, कीमोथेरेपी, डायलिसिस आदि) में 24 घंटे भर्ती होना ज़रूरी नहीं होता, फिर भी वे पॉलिसी में कवर हो सकते हैं।
+    </div>
+
+    <div class="remembered-line">
+      "आप हेल्थ इंश्योरेंस बीमारी के लिए नहीं, बल्कि अस्पताल के बढ़ते खर्चों से अपनी बचत को सुरक्षित रखने के लिए लेते हैं।"
+    </div>
+
+    <!-- Telecaller Scripts -->
+    <div style="margin-top:2rem;">
+      <div class="section-divider"><hr><span>📞 Telecaller Scripts</span><hr></div>
+      <div class="telecaller-box">
+        <div class="tc-label">Script 1 — Policy Explain</div>
+        <p>"सर/मैम, हेल्थ इंश्योरेंस पॉलिसी में अस्पताल का खर्च, सर्जरी, कैशलेस इलाज और मेडिकल इमरजेंसी के दौरान आपकी बचत की सुरक्षा शामिल होती है।"</p>
+      </div>
+      <div class="telecaller-box">
+        <div class="tc-label">Script 2 — How It Works</div>
+        <p>"सर/मैम, जब किसी मेडिकल इमरजेंसी के कारण अस्पताल में भर्ती होने की ज़रूरत पड़ती है, तब आपकी हेल्थ इंश्योरेंस पॉलिसी आपके इलाज के खर्च में आर्थिक सहायता करती है।"</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Glossary Section -->
+  <section class="section" id="glossary-section">
+    <div class="section-header">
+      <div class="section-num">📖</div>
+      <div>
+        <div class="section-title">Key Terms — महत्वपूर्ण शब्द</div>
+        <div class="section-subtitle">Glossary for Telecallers</div>
+      </div>
+    </div>
+
+    <div class="glossary">
+      <div class="glossary-item">
+        <div class="glossary-term">
+          <div class="term-en">Sum Insured</div>
+          <div class="term-hi">सम इंश्योर्ड</div>
+        </div>
+        <div class="glossary-def">कंपनी अधिकतम कितना खर्च कवर करेगी — Maximum amount the insurance company will cover for your treatment.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">
+          <div class="term-en">Premium</div>
+          <div class="term-hi">प्रीमियम</div>
+        </div>
+        <div class="glossary-def">पॉलिसी के लिए आपको कितना भुगतान करना होगा — The amount you pay periodically to keep your insurance active.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">
+          <div class="term-en">Waiting Period</div>
+          <div class="term-hi">वेटिंग पीरियड</div>
+        </div>
+        <div class="glossary-def">कुछ बीमारियों के लिए तय प्रतीक्षा अवधि — A set period before you can claim for certain pre-existing conditions.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">
+          <div class="term-en">Network Hospital</div>
+          <div class="term-hi">नेटवर्क हॉस्पिटल</div>
+        </div>
+        <div class="glossary-def">वे अस्पताल जहाँ कैशलेस इलाज उपलब्ध है — Hospitals where you can avail cashless treatment directly billed to the insurer.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">
+          <div class="term-en">Co-pay</div>
+          <div class="term-hi">को-पे</div>
+        </div>
+        <div class="glossary-def">क्लेम का वह हिस्सा जो ग्राहक को खुद देना पड़ सकता है — A percentage of the claim amount paid by the policyholder.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">
+          <div class="term-en">Exclusions</div>
+          <div class="term-hi">एक्सक्लूज़न</div>
+        </div>
+        <div class="glossary-def">वे बीमारियाँ या खर्च जो पॉलिसी में कवर नहीं होते — Conditions, treatments, or expenses not covered under the policy.</div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Quiz Modal -->
+<div class="quiz-overlay" id="quizOverlay">
+  <div class="quiz-card">
+    <button class="quiz-close" onclick="closeQuiz()">✕</button>
+
+    <div id="quizMain">
+      <div class="quiz-progress-bar">
+        <div class="quiz-progress-fill" id="quizProgressFill"></div>
+      </div>
+      <div class="quiz-counter">
+        <span id="qCounter">Question 1 / 8</span>
+        <span id="qScore">Score: 0</span>
+      </div>
+      <div class="quiz-question" id="quizQuestion"></div>
+      <div class="quiz-hint" id="quizHint"></div>
+      <div class="quiz-options" id="quizOptions"></div>
+      <div class="quiz-feedback" id="quizFeedback"></div>
+      <button class="quiz-next-btn" id="quizNextBtn" onclick="nextQuestion()">अगला सवाल →</button>
+    </div>
+
+    <div class="quiz-score" id="quizScore">
+      <span class="score-emoji" id="scoreEmoji"></span>
+      <div class="score-num" id="scoreFinal"></div>
+      <div class="score-msg" id="scoreMsg"></div>
+      <button class="quiz-next-btn show" onclick="restartQuiz()">🔄 दोबारा खेलें</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── Progress Tracker ──
+  window.addEventListener('scroll', () => {
+    const scrollTop = window.scrollY;
+    const docHeight = document.body.scrollHeight - window.innerHeight;
+    const pct = Math.round((scrollTop / docHeight) * 100);
+    document.getElementById('readProgress').style.width = pct + '%';
+    document.getElementById('progressLabel').textContent = pct + '% पढ़ा गया';
+
+    // Highlight active nav
+    const sections = document.querySelectorAll('.section');
+    const navLinks = document.querySelectorAll('.nav-item a');
+    sections.forEach(sec => {
+      const top = sec.offsetTop - 80;
+      const bottom = top + sec.offsetHeight;
+      if (scrollTop >= top && scrollTop < bottom) {
+        navLinks.forEach(l => l.classList.remove('active'));
+        const active = document.querySelector(`.nav-item a[href="#${sec.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  });
+
+  // ── Quiz Data ──
+  const questions = [
+    {
+      q: "इंश्योरेंस क्या है?",
+      hint: "Section 1 में बताया गया है।",
+      options: [
+        "एक बचत योजना जो ब्याज देती है",
+        "एक सुरक्षा कवच जो मुश्किल समय में बड़े खर्चों से बचाता है",
+        "सरकार द्वारा दी जाने वाली मुफ्त सुविधा",
+        "केवल अमीर लोगों के लिए एक निवेश"
+      ],
+      correct: 1,
+      explanation: "सही! इंश्योरेंस एक सुरक्षा कवच है — आज छोटी रकम (प्रीमियम) देकर भविष्य में बड़े खर्चों से सुरक्षा।"
+    },
+    {
+      q: "IRDAI की स्थापना कब हुई थी?",
+      hint: "Section 3 — IRDAI Regulator",
+      options: ["1991", "1999", "2005", "2010"],
+      correct: 1,
+      explanation: "सही! IRDAI की स्थापना 1999 में IRDA Act, 1999 के तहत हुई थी।"
+    },
+    {
+      q: "भारत में पहली जीवन बीमा कंपनी कहाँ और कब शुरू हुई?",
+      hint: "Section 2 — History Timeline",
+      options: [
+        "1818, Kolkata — Oriental Life Insurance Company",
+        "1666, Mumbai — Fire Insurance Company",
+        "1947, Delhi — Government Insurance Company",
+        "1986, Hyderabad — Health Insurance Company"
+      ],
+      correct: 0,
+      explanation: "सही! 1818 में Kolkata में Oriental Life Insurance Company — भारत की पहली जीवन बीमा कंपनी।"
+    },
+    {
+      q: "हेल्थ इंश्योरेंस किस प्रकार के इंश्योरेंस का हिस्सा है?",
+      hint: "Section 4 — Types of Insurance",
+      options: ["Life Insurance", "General Insurance", "Term Insurance", "Endowment Insurance"],
+      correct: 1,
+      explanation: "सही! हेल्थ इंश्योरेंस, जनरल इंश्योरेंस का एक महत्वपूर्ण हिस्सा है।"
+    },
+    {
+      q: "'Sum Insured' (सम इंश्योर्ड) का क्या अर्थ है?",
+      hint: "Glossary Section देखें।",
+      options: [
+        "आपको हर महीने कितना प्रीमियम देना है",
+        "कंपनी अधिकतम कितना खर्च कवर करेगी",
+        "इलाज के बाद आपको कितना वापस मिलेगा",
+        "पॉलिसी की कुल अवधि"
+      ],
+      correct: 1,
+      explanation: "सही! Sum Insured वह अधिकतम राशि है जो insurance company आपके इलाज पर खर्च करेगी।"
+    },
+    {
+      q: "भारत FY 2024-25 में इंश्योरेंस दुनिया में कौन से नंबर का मार्केट है?",
+      hint: "Section 6 — Industry Stats",
+      options: ["5वाँ", "8वाँ", "10वाँ", "15वाँ"],
+      correct: 2,
+      explanation: "सही! भारत दुनिया का 10वाँ सबसे बड़ा इंश्योरेंस मार्केट है और तेज़ी से बढ़ रहा है।"
+    },
+    {
+      q: "SAHI (Standalone Health Insurance Company) कितनी हैं भारत में?",
+      hint: "Section 7 — Companies",
+      options: ["4", "5", "7", "10"],
+      correct: 2,
+      explanation: "सही! भारत में वर्तमान में 7 SAHI कंपनियाँ हैं जो केवल health insurance पर focus करती हैं।"
+    },
+    {
+      q: "'Co-pay' (को-पे) का मतलब क्या है?",
+      hint: "Glossary Section देखें।",
+      options: [
+        "इंश्योरेंस कंपनी जो पूरा खर्च उठाती है",
+        "क्लेम का वह हिस्सा जो ग्राहक को खुद देना पड़ता है",
+        "दूसरी इंश्योरेंस कंपनी से साथ में कवर",
+        "पॉलिसी की co-ownership"
+      ],
+      correct: 1,
+      explanation: "सही! Co-pay वह प्रतिशत होता है जो ग्राहक खुद चुकाता है — बाकी कंपनी देती है।"
+    }
+  ];
+
+  let currentQ = 0;
+  let score = 0;
+  let answered = false;
+
+  function openQuiz() {
+    currentQ = 0; score = 0; answered = false;
+    document.getElementById('quizOverlay').classList.add('open');
+    document.getElementById('quizScore').classList.remove('show');
+    document.getElementById('quizMain').style.display = 'block';
+    showQuestion();
+  }
+
+  function closeQuiz() {
+    document.getElementById('quizOverlay').classList.remove('open');
+  }
+
+  function showQuestion() {
+    const q = questions[currentQ];
+    answered = false;
+    document.getElementById('qCounter').textContent = `Question ${currentQ + 1} / ${questions.length}`;
+    document.getElementById('qScore').textContent = `Score: ${score}`;
+    document.getElementById('quizProgressFill').style.width = ((currentQ / questions.length) * 100) + '%';
+    document.getElementById('quizQuestion').textContent = q.q;
+    document.getElementById('quizHint').textContent = '💡 ' + q.hint;
+    document.getElementById('quizFeedback').className = 'quiz-feedback';
+    document.getElementById('quizNextBtn').className = 'quiz-next-btn';
+
+    const opts = document.getElementById('quizOptions');
+    opts.innerHTML = '';
+    q.options.forEach((opt, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'quiz-option';
+      btn.textContent = opt;
+      btn.onclick = () => selectOption(i, btn);
+      opts.appendChild(btn);
+    });
+  }
+
+  function selectOption(idx, btn) {
+    if (answered) return;
+    answered = true;
+    const q = questions[currentQ];
+    const allBtns = document.querySelectorAll('.quiz-option');
+    allBtns.forEach(b => b.disabled = true);
+
+    const feedback = document.getElementById('quizFeedback');
+    if (idx === q.correct) {
+      btn.classList.add('correct');
+      score++;
+      feedback.textContent = '✅ ' + q.explanation;
+      feedback.className = 'quiz-feedback correct show';
+    } else {
+      btn.classList.add('wrong');
+      allBtns[q.correct].classList.add('correct');
+      feedback.textContent = '❌ ' + q.explanation;
+      feedback.className = 'quiz-feedback wrong show';
+    }
+
+    document.getElementById('qScore').textContent = `Score: ${score}`;
+    document.getElementById('quizNextBtn').className = 'quiz-next-btn show';
+    document.getElementById('quizNextBtn').textContent =
+      currentQ === questions.length - 1 ? '🏁 परिणाम देखें' : 'अगला सवाल →';
+  }
+
+  function nextQuestion() {
+    currentQ++;
+    if (currentQ >= questions.length) {
+      showScore();
+    } else {
+      showQuestion();
+    }
+  }
+
+  function showScore() {
+    document.getElementById('quizMain').style.display = 'none';
+    const scoreEl = document.getElementById('quizScore');
+    scoreEl.classList.add('show');
+    const pct = Math.round((score / questions.length) * 100);
+    document.getElementById('scoreFinal').textContent = `${score} / ${questions.length}`;
+    let emoji, msg;
+    if (pct >= 90) { emoji = '🏆'; msg = 'शानदार! आप एक Expert Telecaller बनने के लिए तैयार हैं!'; }
+    else if (pct >= 70) { emoji = '🌟'; msg = 'बहुत अच्छा! थोड़ा और revision करें और आप perfect होंगे।'; }
+    else if (pct >= 50) { emoji = '📚'; msg = 'ठीक है! Notes दोबारा पढ़ें और Quiz फिर से try करें।'; }
+    else { emoji = '💪'; msg = 'हिम्मत रखें! हर Chapter ध्यान से पढ़ें और quiz फिर try करें।'; }
+    document.getElementById('scoreEmoji').textContent = emoji;
+    document.getElementById('scoreMsg').textContent = msg;
+  }
+
+  function restartQuiz() {
+    openQuiz();
+  }
+
+  // Close on backdrop click
+  document.getElementById('quizOverlay').addEventListener('click', function(e) {
+    if (e.target === this) closeQuiz();
+  });
+
+  // Escape key
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeQuiz(); });
+
+  // Animate stats on scroll
+  const statValues = document.querySelectorAll('.stat-value');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.animation = 'fadeUp 0.5s ease both';
+      }
+    });
+  }, { threshold: 0.2 });
+  statValues.forEach(sv => observer.observe(sv));
+</script>
+</body>
+</html>
